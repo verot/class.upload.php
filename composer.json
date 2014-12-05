@@ -12,12 +12,12 @@
         }
     ],
     "support":{
-        "email":"colin@verot.net",
+        "email":"colin@verot.net"
     },
     "require": {
         "php": ">=4"
     },
     "autoload": {
-        "classmap": ["src/class.upload.php"],
+        "classmap": ["src/class.upload.php"]
     }
 }
