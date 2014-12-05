@@ -1,2 +1,4 @@
 test/tmp/
-
+dev/
+*.sublime-project
+*.sublime-workspace

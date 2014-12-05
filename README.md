@@ -1,10 +1,11 @@
 # class.upload.php
 
-[http://www.verot.net/php_class_upload.htm](http://www.verot.net/php_class_upload.htm)
+Homepage : [http://www.verot.net/php_class_upload.htm](http://www.verot.net/php_class_upload.htm)
 
 ## What does it do?
 
-It manages file uploads for you. In short, it manages the uploaded file, and allows you to do whatever you want with the file, especially if it is an image, and as many times as you want.
+
+This class manages file uploads for you. In short, it manages the uploaded file, and allows you to do whatever you want with the file, especially if it is an image, and as many times as you want.
 
 It is the ideal class to quickly integrate file upload in your site. If the file is an image, you can convert, resize, crop it in many ways. You can also apply filters, add borders, text, watermarks, etc... That's all you need for a gallery script for instance. Supported formats are PNG, JPG, GIF and BMP.
 
@@ -13,19 +14,25 @@ You can also use the class to work on local files, which is especially useful to
 The class works with PHP 4 and 5, and its error messages can be localized at will.
 
 
-## How does it work?
 
-You instanciate the class with the `$_FILES['my_field']` array where _my_field_ is the field name from your upload form. The class will check if the original file has been uploaded to its temporary location (alternatively, you can instanciate the class with a local filename).
 
-You can then set a number of processing variables to act on the file. For instance, you can rename the file, and if it is an image, convert and resize it in many ways. You can also set what will the class do if the file already exists.
+## Install via composer
 
-Then you call the function `process()` to actually perform the actions according to the processing parameters you set above. It will create new instances of the original file, so the original file remains the same between each process. The file will be manipulated, and copied to the given location. The processing variables will be reset once it is done.
+Edit your composer.json file to include the following:
 
-You can repeat setting up a new set of processing variables, and calling `process()` again as many times as you want. When you have finished, you can call `clean()` to delete the original uploaded file.
+```
+    {
+       "require": {
+           "verot/class.upload.php": "dev-master"
+       }
+    }
+```
 
-If you don't set any processing parameters and call `process()` just after instanciating the class. The uploaded file will be simply copied to the given location without any alteration or checks.
+## Demo and examples
 
-Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if you want your form to upload the file.
+Check out the `test/` directory, which you can load in your browser. You can test the class and its different ways to instantiate it, see some code examples, and run some tests.
+
+
 
 ## How to use it?
 
@@ -36,7 +43,7 @@ Create a simple HTML file, with a form such as:
   <input type="submit" name="Submit" value="upload">
 </form>
 ```
-Create a file called upload.php:
+Create a file called upload.php (into which you have first loaded the class):
 ```php
 $handle = new upload($_FILES['image_field']);
 if ($handle->uploaded) {
@@ -53,6 +60,23 @@ if ($handle->uploaded) {
   }
 }
 ```
+
+
+### How does it work?
+
+You instanciate the class with the `$_FILES['my_field']` array where _my_field_ is the field name from your upload form. The class will check if the original file has been uploaded to its temporary location (alternatively, you can instanciate the class with a local filename).
+
+You can then set a number of processing variables to act on the file. For instance, you can rename the file, and if it is an image, convert and resize it in many ways. You can also set what will the class do if the file already exists.
+
+Then you call the function `process()` to actually perform the actions according to the processing parameters you set above. It will create new instances of the original file, so the original file remains the same between each process. The file will be manipulated, and copied to the given location. The processing variables will be reset once it is done.
+
+You can repeat setting up a new set of processing variables, and calling `process()` again as many times as you want. When you have finished, you can call `clean()` to delete the original uploaded file.
+
+If you don't set any processing parameters and call `process()` just after instanciating the class. The uploaded file will be simply copied to the given location without any alteration or checks.
+
+Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if you want your form to upload the file.
+
+
 
 ### How to process a file uploaded via XMLHttpRequest?
 
