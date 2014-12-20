@@ -1,6 +1,9 @@
 # class.upload.php
 
 Homepage : [http://www.verot.net/php_class_upload.htm](http://www.verot.net/php_class_upload.htm)
+Demo : [http://www.verot.net/php_class_upload_samples.htm](http://www.verot.net/php_class_upload_samples.htm)
+Commercial use: [http://www.verot.net/php_class_upload_license.htm](http://www.verot.net/php_class_upload_license.htm)
+
 
 ## What does it do?
 
