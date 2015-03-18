@@ -2010,7 +2010,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '0.32';
+        $this->version            = '0.33dev';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
@@ -2901,7 +2901,7 @@ class upload {
             // checks file max size
             if ($this->file_src_size > $this->file_max_size) {
                 $this->processed = false;
-                $this->error = $this->translate('file_too_big');
+                $this->error = $this->translate('file_too_big') . ' : ' . $this->file_src_size . ' > ' . $this->file_max_size;
             } else {
                 $this->log .= '- file size OK<br />';
             }
