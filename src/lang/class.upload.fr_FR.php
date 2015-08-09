@@ -67,7 +67,7 @@
     $translation['temp_file_missing']           = 'Le fichier source est incorrect. Impossible de continuer.';
     $translation['source_missing']              = 'Le fichier transmis est incorrect. Impossible de continuer.';
     $translation['destination_dir']             = 'Le répertoire de destination ne peut être crée. Impossible de continuer.';
-    $translation['destination_dir_missing']     = 'Le répertoire de destination n\'éxiste pas. Impossible de continuer.';
+    $translation['destination_dir_missing']     = 'Le répertoire de destination n\'existe pas. Impossible de continuer.';
     $translation['destination_path_not_dir']    = 'Le chemin de destination n\'est pas un répertoire. Impossible de continuer.';
     $translation['destination_dir_write']       = 'Le répertoire de destination ne peut être ouvert en écriture. Impossible de continuer.';
     $translation['destination_path_write']      = 'Le chemin de destination ne peut être ouvert en écriture. Impossible de continuer.';
