@@ -623,6 +623,7 @@ The class requires PHP 4.3+, and is compatible with PHP5
 * added `image_dst_type`
 * fixed filesize when using XMLHttpRequest
 * added Hungarian translation
+* added Tamil translation
 * fixed Turkish translation
 * updated regex rules for MIME detection
 * added _composer.json_
