@@ -1894,7 +1894,8 @@ class upload {
             'text/rtf',
             'text/richtext',
             'text/xml',
-            'video/*'
+            'video/*',
+            'text/csv'
         );
 
         $this->mime_types = array(
@@ -1980,6 +1981,7 @@ class upload {
             'onetoc2' => 'application/onenote',
             'onetmp' => 'application/onenote',
             'onepkg' => 'application/onenote',
+            'csv' => 'text/csv',
         );
 
     }
