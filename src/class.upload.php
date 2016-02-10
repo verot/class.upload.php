@@ -1987,7 +1987,14 @@ class upload {
     }
 
     /**
-     * Constructor. Checks if the file has been uploaded
+     * Constructor, for PHP5+
+     */
+    function  __construct($file, $lang = 'en_GB')  {
+        $this->upload($file, $lang);
+    }
+
+    /**
+     * Constructor, for PHP4. Checks if the file has been uploaded
      *
      * The constructor takes $_FILES['form_field'] array as argument
      * where form_field is the form field name

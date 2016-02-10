@@ -16,7 +16,7 @@ It is the ideal class to quickly integrate file upload in your site. If the file
 
 You can also use the class to work on local files, which is especially useful to use the image manipulation features. The class also supports Flash uploaders and XMLHttpRequest.
 
-The class works with PHP 4 and 5, and its error messages can be localized at will.
+The class works with PHP 4, 5 and 7, and its error messages can be localized at will.
 
 
 
@@ -612,7 +612,7 @@ If the file is a supported image type
 
 Most of the image operations require GD. GD2 is greatly recommended
 
-The class requires PHP 4.3+, and is compatible with PHP5
+The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 
 
 
