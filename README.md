@@ -465,7 +465,11 @@ $handle->image_text_line_spacing = 3;
 ```php
 $handle->image_flip = 'h';
 ```
-* **image_rotate** rotates image. possible values are 90, 180 and 270 (default: null)
+* **image_rotate_auto** automatically rotates the image according to EXIF data (JPEG only) (default: true)
+```php
+$handle->image_rotate_auto = false;
+```
+* **image_rotate** rotates image. Possible values are 90, 180 and 270 (default: null)
 ```php
 $handle->image_rotate = 90;
 ```
@@ -630,6 +634,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 * updated regex rules for MIME detection
 * added _composer.json_
 * updated code for GIT publishing
+* added `image_rotate_auto`
 
 **v 0.32** 15/01/2013
 
