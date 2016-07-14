@@ -3604,7 +3604,7 @@ class upload {
                     }
 
                     // automatically rotates the image according to EXIF data (JPEG only)
-                    if ($this->image_rotate_auto && $this->image_src_type = 'jpg' && function_exists('exif_read_data')) {
+                    if ($this->image_rotate_auto && $this->image_src_type == 'jpg' && function_exists('exif_read_data')) {
                         $exif = exif_read_data($this->file_src_pathname);
                         $ort = $exif['Orientation'];
                         switch($ort) {
