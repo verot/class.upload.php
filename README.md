@@ -622,10 +622,9 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 
 ## Changelog
 
-**dev**
+**v 0.33** 16/07/2016
 
 * added PHP7 compatibility
-* added `image_dst_type`
 * fixed filesize when using XMLHttpRequest
 * added Hungarian translation
 * added Tamil translation
@@ -634,7 +633,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 * updated regex rules for MIME detection
 * added _composer.json_
 * updated code for GIT publishing
-* added `image_auto_rotate`
+* auto-rotate JPEG according to EXIF data
 
 **v 0.32** 15/01/2013
 
