@@ -421,7 +421,7 @@ $handle->image_text_background = '#FFFFFF';
 ```php
 $handle->image_text_background_opacity = 50;
 ```
-* **image_text_font** built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5)
+* **image_text_font** built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5) Value can also be a string, which represents the path to a GDF font. The font will be loaded into GD, and used as a built-in font.
 ```php
 $handle->image_text_font = 4;
 ```
