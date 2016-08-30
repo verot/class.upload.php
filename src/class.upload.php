@@ -1923,7 +1923,6 @@ class upload {
             'css' => 'text/css',
             'xml' => 'application/xml',
             'doc' => 'application/msword',
-            'docx' => 'application/msword',
             'xls' => 'application/vnd.ms-excel',
             'xlt' => 'application/vnd.ms-excel',
             'xlm' => 'application/vnd.ms-excel',
