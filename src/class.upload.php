@@ -1042,6 +1042,8 @@ class upload {
      *
      * Value is either 'h' or 'v', as in horizontal and vertical
      *
+     * Note that if you use a TrueType font, you can use {@link image_text_angle} instead
+     *
      * Default value is h (horizontal)
      *
      * @access public
@@ -1117,7 +1119,7 @@ class upload {
      * Sets the text font in the text label
      *
      * Value is a an integer between 1 and 5 for GD built-in fonts. 1 is the smallest font, 5 the biggest
-     * Value can also be a string, which represents the path to a GDF font. The font will be loaded into GD, and used as a built-in font.
+     * Value can also be a string, which represents the path to a GDF or TTF font (TrueType).
      *
      * Default value is 5
      *
@@ -1125,6 +1127,35 @@ class upload {
      * @var mixed;
      */
     var $image_text_font;
+
+    /**
+     * Sets the text font size for TrueType fonts
+     *
+     * Value is a an integer, and represents the font size in pixels (GD1) or points (GD1)
+     *
+     * Note that this setting is only applicable to TrueType fonts, and has no effects with GD fonts
+     *
+     * Default value is 16
+     *
+     * @access public
+     * @var integer;
+     */
+    var $image_text_size;
+
+    /**
+     * Sets the text angle for TrueType fonts
+     *
+     * Value is a an integer between 0 and 360, in degrees, with 0 degrees being left-to-right reading text.
+     *
+     * Note that this setting is only applicable to TrueType fonts, and has no effects with GD fonts
+     * For GD fonts, you can use {@link image_text_direction} instead
+     *
+     * Default value is null (so it is determined by the value of {@link image_text_direction})
+     *
+     * @access public
+     * @var integer;
+     */
+    var $image_text_angle;
 
     /**
      * Sets the text label position within the image
@@ -1224,6 +1255,8 @@ class upload {
      *
      * This setting is relevant only if the text has several lines.
      *
+     * Note that this setting is only applicable to GD fonts, and has no effects with TrueType fonts
+     *
      * @access public
      * @var string;
      */
@@ -1237,6 +1270,8 @@ class upload {
      * Default value is 0
      *
      * This setting is relevant only if the text has several lines.
+     *
+     * Note that this setting is only applicable to GD fonts, and has no effects with TrueType fonts
      *
      * @access public
      * @var integer
@@ -1782,6 +1817,8 @@ class upload {
         $this->image_text_background_opacity = 100;
         $this->image_text_background_percent = 100;
         $this->image_text_font          = 5;
+        $this->image_text_size          = 16;
+        $this->image_text_angle         = null;
         $this->image_text_x             = null;
         $this->image_text_y             = null;
         $this->image_text_position      = null;
@@ -2029,7 +2066,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '0.33';
+        $this->version            = '0.34dev';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
@@ -4255,8 +4292,11 @@ class upload {
                         $this->image_text_direction = strtolower($this->image_text_direction);
                         $this->image_text_alignment = strtolower($this->image_text_alignment);
 
-                        // if the font is a string, we assume that we might want to load a font
+                        $font_type = 'gd';
+
+                        // if the font is a string with a GDF font path, we assume that we might want to load a font
                         if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.gdf') {
+                            if (strpos($this->image_text_font, '/') === false) $this->image_text_font = "./" . $this->image_text_font;
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;try to load font ' . $this->image_text_font . '... ';
                             if ($this->image_text_font = @imageloadfont($this->image_text_font)) {
                                 $this->log .=  'success<br />';
@@ -4266,29 +4306,66 @@ class upload {
                             }
                         }
 
-                        $text = explode("\n", $this->image_text);
-                        $char_width = imagefontwidth($this->image_text_font);
-                        $char_height = imagefontheight($this->image_text_font);
-                        $text_height = 0;
-                        $text_width = 0;
-                        $line_height = 0;
-                        $line_width = 0;
-
-                        foreach ($text as $k => $v) {
-                            if ($this->image_text_direction == 'v') {
-                                $h = ($char_width * strlen($v));
-                                if ($h > $text_height) $text_height = $h;
-                                $line_width = $char_height;
-                                $text_width += $line_width + ($k < (sizeof($text)-1) ? $this->image_text_line_spacing : 0);
+                        // if the font is a string with a TTF font path, we check if we can access the font file
+                        if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.ttf') {
+                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;try to load font ' . $this->image_text_font . '... ';
+                            if (strpos($this->image_text_font, '/') === false) $this->image_text_font = "./" . $this->image_text_font;
+                            if (file_exists($this->image_text_font) && is_readable($this->image_text_font)) {
+                                $this->log .=  'success<br />';
+                                $font_type = 'tt';
                             } else {
-                                $w = ($char_width * strlen($v));
-                                if ($w > $text_width) $text_width = $w;
-                                $line_height = $char_height;
-                                $text_height += $line_height + ($k < (sizeof($text)-1) ? $this->image_text_line_spacing : 0);
+                                $this->log .=  'error<br />';
+                                $this->image_text_font = 5;
                             }
                         }
-                        $text_width  += (2 * $this->image_text_padding_x);
-                        $text_height += (2 * $this->image_text_padding_y);
+
+                        // get the text bounding box (GD fonts)
+                        if ($font_type == 'gd') {
+                            $text = explode("\n", $this->image_text);
+                            $char_width = imagefontwidth($this->image_text_font);
+                            $char_height = imagefontheight($this->image_text_font);
+                            $text_height = 0;
+                            $text_width = 0;
+                            $line_height = 0;
+                            $line_width = 0;
+                            foreach ($text as $k => $v) {
+                                if ($this->image_text_direction == 'v') {
+                                    $h = ($char_width * strlen($v));
+                                    if ($h > $text_height) $text_height = $h;
+                                    $line_width = $char_height;
+                                    $text_width += $line_width + ($k < (sizeof($text)-1) ? $this->image_text_line_spacing : 0);
+                                } else {
+                                    $w = ($char_width * strlen($v));
+                                    if ($w > $text_width) $text_width = $w;
+                                    $line_height = $char_height;
+                                    $text_height += $line_height + ($k < (sizeof($text)-1) ? $this->image_text_line_spacing : 0);
+                                }
+                            }
+                            $text_width  += (2 * $this->image_text_padding_x);
+                            $text_height += (2 * $this->image_text_padding_y);
+
+                        // get the text bounding box (TrueType fonts)
+                        } else if ($font_type == 'tt') {
+                            $text = $this->image_text;
+                            if (!$this->image_text_angle) $this->image_text_angle = $this->image_text_direction == 'v' ? 90 : 0;
+                            $text_height = 0;
+                            $text_width = 0;
+                            $text_offset_x = 0;
+                            $text_offset_y = 0;
+                            $rect = imagettfbbox($this->image_text_size, $this->image_text_angle, $this->image_text_font, $text );
+                            if ($rect) {
+                                $minX = min(array($rect[0],$rect[2],$rect[4],$rect[6])); 
+                                $maxX = max(array($rect[0],$rect[2],$rect[4],$rect[6])); 
+                                $minY = min(array($rect[1],$rect[3],$rect[5],$rect[7])); 
+                                $maxY = max(array($rect[1],$rect[3],$rect[5],$rect[7])); 
+                                $text_offset_x = abs($minX) - 1; 
+                                $text_offset_y = abs($minY) - 1;
+                                $text_width = $maxX - $minX + (2 * $this->image_text_padding_x);
+                                $text_height = $maxY - $minY + (2 * $this->image_text_padding_y);
+                            }
+                        }
+
+                        // position the text block
                         $text_x = 0;
                         $text_y = 0;
                         if (is_numeric($this->image_text_x)) {
@@ -4350,44 +4427,66 @@ class upload {
                             $filter = $this->imagecreatenew($t_width, $t_height, false, true);
                             $text_color = imagecolorallocate($filter ,$red, $green, $blue);
 
-                            foreach ($text as $k => $v) {
-                                if ($this->image_text_direction == 'v') {
-                                    imagestringup($filter,
-                                                  $this->image_text_font,
-                                                  $k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
-                                                  $text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))) ,
-                                                  $v,
-                                                  $text_color);
-                                } else {
-                                    imagestring($filter,
-                                                $this->image_text_font,
-                                                ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
-                                                $k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
-                                                $v,
-                                                $text_color);
+                            if ($font_type == 'gd') {
+                                foreach ($text as $k => $v) {
+                                    if ($this->image_text_direction == 'v') {
+                                        imagestringup($filter,
+                                                      $this->image_text_font,
+                                                      $k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
+                                                      $text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))) ,
+                                                      $v,
+                                                      $text_color);
+                                    } else {
+                                        imagestring($filter,
+                                                    $this->image_text_font,
+                                                    ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
+                                                    $k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
+                                                    $v,
+                                                    $text_color);
+                                    }
                                 }
+                            } else if ($font_type == 'tt') {
+                                imagettftext($filter,
+                                             $this->image_text_size,
+                                             $this->image_text_angle,
+                                             $text_offset_x,
+                                             $text_offset_y,
+                                             $text_color,
+                                             $this->image_text_font,
+                                             $text);
                             }
                             $this->imagecopymergealpha($image_dst, $filter, $text_x, $text_y, 0, 0, $t_width, $t_height, $this->image_text_opacity);
                             imagedestroy($filter);
 
                         } else {
-                            $text_color = imageColorAllocate($image_dst ,$red, $green, $blue);
-                            foreach ($text as $k => $v) {
-                                if ($this->image_text_direction == 'v') {
-                                    imagestringup($image_dst,
-                                                  $this->image_text_font,
-                                                  $text_x + $k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
-                                                  $text_y + $text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
-                                                  $v,
-                                                  $text_color);
-                                } else {
-                                    imagestring($image_dst,
-                                                $this->image_text_font,
-                                                $text_x + ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
-                                                $text_y + $k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
-                                                $v,
-                                                $text_color);
+                            $text_color = imagecolorallocate($image_dst ,$red, $green, $blue);
+                            if ($font_type == 'gd') {
+                                foreach ($text as $k => $v) {
+                                    if ($this->image_text_direction == 'v') {
+                                        imagestringup($image_dst,
+                                                      $this->image_text_font,
+                                                      $text_x + $k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
+                                                      $text_y + $text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
+                                                      $v,
+                                                      $text_color);
+                                    } else {
+                                        imagestring($image_dst,
+                                                    $this->image_text_font,
+                                                    $text_x + ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
+                                                    $text_y + $k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
+                                                    $v,
+                                                    $text_color);
+                                    }
                                 }
+                            } else if ($font_type == 'tt') {
+                                imagettftext($image_dst,
+                                             $this->image_text_size,
+                                             $this->image_text_angle,
+                                             $text_offset_x + ($this->image_dst_x / 2) - ($text_width / 2) + $this->image_text_padding_x,
+                                             $text_offset_y + ($this->image_dst_y / 2) - ($text_height / 2) + $this->image_text_padding_y,
+                                             $text_color,
+                                             $this->image_text_font,
+                                             $text);
                             }
                         }
                     }

@@ -421,9 +421,17 @@ $handle->image_text_background = '#FFFFFF';
 ```php
 $handle->image_text_background_opacity = 50;
 ```
-* **image_text_font** built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5) Value can also be a string, which represents the path to a GDF font. The font will be loaded into GD, and used as a built-in font.
+* **image_text_font** built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5). Value can also be a string, which represents the path to a GDF or TTF font (TrueType).
 ```php
-$handle->image_text_font = 4;
+$handle->image_text_font = 4; // or './font.gdf' or './font.ttf'
+```
+* **image_text_size** font size for TrueType fonts, in pixels (GD1) or points (GD1) (default: 16) (TrueType fonts only)
+```php
+$handle->image_text_size = 24;
+```
+* **image_text_angle** text angle for TrueType fonts, in degrees, with 0 degrees being left-to-right reading text(default: null) (TrueType fonts only)
+```php
+$handle->image_text_angle = 45;
 ```
 * **image_text_x** absolute text label position, in pixels from the left border. can be negative (default: null)
 ```php
@@ -449,11 +457,11 @@ $handle->image_text_padding_x = 2;
 ```php
 $handle->image_text_padding_y = 10;
 ```
-* **image_text_alignment** text alignment when text has multiple lines, either 'L', 'C' or 'R' (default: 'C')
+* **image_text_alignment** text alignment when text has multiple lines, either 'L', 'C' or 'R' (default: 'C') (GD fonts only)
 ```php
 $handle->image_text_alignment = 'R';
 ```
-* **image_text_line_spacing** space between lines in pixels, when text has multiple lines (default: 0)
+* **image_text_line_spacing** space between lines in pixels, when text has multiple lines (default: 0) (GD fonts only)
 ```php
 $handle->image_text_line_spacing = 3;
 ```
@@ -621,6 +629,10 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 
 
 ## Changelog
+
+**dev**
+
+* added support for UTF-8 text and TrueType fonts
 
 **v 0.33** 16/07/2016
 

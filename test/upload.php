@@ -754,19 +754,44 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
 
         // -----------
         $handle->image_text    = "verot.net\nclass\nupload";
-        $handle->image_text_background = '#000000';
-        $handle->image_text_padding    = 10;
-        $handle->image_text_font = "foo.gdf";
+        $handle->image_text_background  = '#000000';
+        $handle->image_text_padding     = 10;
+        $handle->image_text_font        = "./foo.gdf";
         $handle->image_text_line_spacing = 2;
-        TestProcess($handle, 'text label with external GDF font', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"foo.gdf\";\n\$foo->image_text_line_spacing = 2;");
+        TestProcess($handle, 'text label with external GDF font', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"./foo.gdf\";\n\$foo->image_text_line_spacing = 2;");
 
         // -----------
         $handle->image_text            = "PHP";
         $handle->image_text_color      = '#FFFF00';
         $handle->image_text_background = '#FF0000';
         $handle->image_text_padding    = 10;
-        $handle->image_text_font = "foo.gdf";
-        TestProcess($handle, 'text label with external GDF font', "\$foo->image_text            = 'PHP';\n\$foo->image_text_color      = '#FFFF00';\n\$foo->image_text_background = '#FF0000';\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"foo.gdf\";");
+        $handle->image_text_font       = "./foo.gdf";
+        TestProcess($handle, 'text label with external GDF font', "\$foo->image_text            = 'PHP';\n\$foo->image_text_color      = '#FFFF00';\n\$foo->image_text_background = '#FF0000';\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"./foo.gdf\";");
+
+        // -----------
+        $handle->image_text            = "àzértyuïôp";
+        $handle->image_text_background = '#000000';
+        $handle->image_text_padding    = 10;
+        $handle->image_text_font       = "./foo.ttf";
+        TestProcess($handle, 'UTF-8 text label with external TTF font', "\$foo->image_text            = \"àzértyuïôp\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"./foo.ttf\";");
+
+        // -----------
+        $handle->image_text    = "άλφα\nβήτα";
+        $handle->image_text_color      = '#0033CC';
+        $handle->image_text_size       = 28;
+        $handle->image_text_font       = "./foo.ttf";
+        $handle->image_overlay_color   = '#FFFFFF';
+        $handle->image_overlay_opacity = 75;
+        TestProcess($handle, 'UTF-8 text label with external TTF font', "\$foo->image_text            = \"άλφα\\nβήτα\";\n\$foo->image_text_color      = '#0033CC';\n\$foo->image_text_size       = 28;\n\$foo->image_text_font       = \"./foo.ttf\";\n\$foo->image_overlay_color   = '#FFFFFF';\n\$foo->image_overlay_opacity = 75;");
+
+        // -----------
+        $handle->image_text            = "люблю";
+        $handle->image_text_background = '#000000';
+        $handle->image_text_padding    = 10;
+        $handle->image_text_size       = 20;
+        $handle->image_text_angle      = 20;
+        $handle->image_text_font       = "./foo.ttf";
+        TestProcess($handle, 'UTF-8 text label with external TTF font', "\$foo->image_text            = \"люблю\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_size       = 20;\n\$foo->image_text_angle      = 20;\n\$foo->image_text_padding    = 10;\n\$foo->image_text_font       = \"./foo.ttf\";");
 
         // -----------
         $handle->image_reflection_height = '40px';
