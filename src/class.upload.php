@@ -2134,7 +2134,7 @@ class upload {
         // display some system information
         if (empty($this->log)) {
             $this->log .= '<b>system information</b><br />';
-            if (function_exists('ini_get_all')) {
+            if ($this->function_enabled('ini_get_all')) {
                 $inis = ini_get_all();
                 $open_basedir = (array_key_exists('open_basedir', $inis) && array_key_exists('local_value', $inis['open_basedir']) && !empty($inis['open_basedir']['local_value'])) ? $inis['open_basedir']['local_value'] : false;
             } else {
@@ -2306,7 +2306,7 @@ class upload {
             if (!$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, '/') === FALSE) {
                 if ($this->mime_fileinfo) {
                     $this->log .= '- Checking MIME type with Fileinfo PECL extension<br />';
-                    if (function_exists('finfo_open')) {
+                    if ($this->function_enabled('finfo_open')) {
                         $path = null;
                         if ($this->mime_fileinfo !== '') {
                             if ($this->mime_fileinfo === true) {
@@ -2371,7 +2371,7 @@ class upload {
                 if ($this->mime_file) {
                     $this->log .= '- Checking MIME type with UNIX file() command<br />';
                     if (substr(PHP_OS, 0, 3) != 'WIN') {
-                        if (function_exists('exec') && function_exists('escapeshellarg') && !extension_loaded('suhosin')) {
+                        if ($this->function_enabled('exec') && $this->function_enabled('escapeshellarg')) {
                             if (strlen($mime = @exec("file -bi ".escapeshellarg($this->file_src_pathname))) != 0) {
                                 $this->file_src_mime = trim($mime);
                                 $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as ' . $this->file_src_mime . ' by UNIX file() command<br />';
@@ -2399,7 +2399,7 @@ class upload {
             if (!$this->file_src_mime || !is_string($this->file_src_mime) || empty($this->file_src_mime) || strpos($this->file_src_mime, '/') === FALSE) {
                 if ($this->mime_magic) {
                     $this->log .= '- Checking MIME type with mime.magic file (mime_content_type())<br />';
-                    if (function_exists('mime_content_type')) {
+                    if ($this->function_enabled('mime_content_type')) {
                         $this->file_src_mime = mime_content_type($this->file_src_pathname);
                         $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;MIME type detected as ' . $this->file_src_mime . ' by mime_content_type()<br />';
                         if (preg_match("/^([\.\w-]+)\/([\.\w-]+)(.*)$/i", $this->file_src_mime)) {
@@ -2533,7 +2533,7 @@ class upload {
         static $gd_version = null;
         static $gd_full_version = null;
         if ($gd_version === null) {
-            if (function_exists('gd_info')) {
+            if ($this->function_enabled('gd_info')) {
                 $gd = gd_info();
                 $gd = $gd["GD Version"];
                 $regex = "/([\d\.]+)/i";
@@ -2557,6 +2557,24 @@ class upload {
         } else {
             return $gd_version;
         }
+    }
+
+    /**
+     * Checks if a function is available
+     *
+     * @access private
+     * @param  string  $func Function name
+     * @return boolean Success
+     */
+    function function_enabled($func) {
+        // cache the list of disabled functions
+        static $disabled = null;
+        if ($disabled === null) $disabled = array_map('trim', array_map('strtolower', explode(',', ini_get('disable_functions'))));
+        // cache the list of functions blacklisted by suhosin
+        static $blacklist = null;
+        if ($blacklist === null) $blacklist = extension_loaded('suhosin') ? array_map('trim', array_map('strtolower', explode(',', ini_get('  suhosin.executor.func.blacklist')))) : array();
+        // checks if the function is really enabled
+        return (function_exists($func) && !in_array($func, $disabled) && !in_array($func, $blacklist));
     }
 
     /**
@@ -2608,7 +2626,7 @@ class upload {
      */
     function temp_dir() {
         $dir = '';
-        if (function_exists('sys_get_temp_dir')) $dir = sys_get_temp_dir();
+        if ($this->function_enabled('sys_get_temp_dir')) $dir = sys_get_temp_dir();
         if (!$dir && $tmp=getenv('TMP'))    $dir = $tmp;
         if (!$dir && $tmp=getenv('TEMP'))   $dir = $tmp;
         if (!$dir && $tmp=getenv('TMPDIR')) $dir = $tmp;
@@ -3244,7 +3262,7 @@ class upload {
                 if ($this->gdversion()) {
                     switch($this->image_src_type) {
                         case 'jpg':
-                            if (!function_exists('imagecreatefromjpeg')) {
+                            if (!$this->function_enabled('imagecreatefromjpeg')) {
                                 $this->processed = false;
                                 $this->error = $this->translate('no_create_support', array('JPEG'));
                             } else {
@@ -3258,7 +3276,7 @@ class upload {
                             }
                             break;
                         case 'png':
-                            if (!function_exists('imagecreatefrompng')) {
+                            if (!$this->function_enabled('imagecreatefrompng')) {
                                 $this->processed = false;
                                 $this->error = $this->translate('no_create_support', array('PNG'));
                             } else {
@@ -3272,7 +3290,7 @@ class upload {
                             }
                             break;
                         case 'gif':
-                            if (!function_exists('imagecreatefromgif')) {
+                            if (!$this->function_enabled('imagecreatefromgif')) {
                                 $this->processed = false;
                                 $this->error = $this->translate('no_create_support', array('GIF'));
                             } else {
@@ -3363,7 +3381,7 @@ class upload {
                     $image_dst = & $image_src;
 
                     // automatically pre-rotates the image according to EXIF data (JPEG only)
-                    if ($this->image_auto_rotate && $this->image_src_type == 'jpg' && function_exists('exif_read_data')) {
+                    if ($this->image_auto_rotate && $this->image_src_type == 'jpg' && $this->function_enabled('exif_read_data')) {
                         $auto_flip = false;
                         $auto_rotate = 0;
                         $exif = @exif_read_data($this->file_src_pathname);
@@ -3466,7 +3484,7 @@ class upload {
                             $this->log .= '- auto-rotate deactivated<br />';
                         } else if (!$this->image_src_type == 'jpg') {
                             $this->log .= '- auto-rotate applies only to JPEG images<br />';
-                        } else if (!function_exists('exif_read_data')) {
+                        } else if (!$this->function_enabled('exif_read_data')) {
                             $this->log .= '- auto-rotate requires function exif_read_data to be enabled<br />';
                         }
                     }
@@ -3767,7 +3785,7 @@ class upload {
                             $this->image_dst_x = imagesx($image_dst); $this->image_dst_y = imagesy($image_dst);
                             $canvas = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y, false, true);
                             $blur = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y, false, true);
-                            if (function_exists('imageconvolution')) { // PHP >= 5.1
+                            if ($this->function_enabled('imageconvolution')) { // PHP >= 5.1
                                 $matrix = array(array( 1, 2, 1 ), array( 2, 4, 2 ), array( 1, 2, 1 ));
                                 imagecopy($blur, $image_dst, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y);
                                 imageconvolution($blur, $matrix, 16, 0);
@@ -4048,7 +4066,7 @@ class upload {
                         $watermark_type = (array_key_exists(2, $watermark_info) ? $watermark_info[2] : null); // 1 = GIF, 2 = JPG, 3 = PNG
                         $watermark_checked = false;
                         if ($watermark_type == IMAGETYPE_GIF) {
-                            if (!function_exists('imagecreatefromgif')) {
+                            if (!$this->function_enabled('imagecreatefromgif')) {
                                 $this->error = $this->translate('watermark_no_create_support', array('GIF'));
                             } else {
                                 $filter = @imagecreatefromgif($this->image_watermark);
@@ -4060,7 +4078,7 @@ class upload {
                                 }
                             }
                         } else if ($watermark_type == IMAGETYPE_JPEG) {
-                            if (!function_exists('imagecreatefromjpeg')) {
+                            if (!$this->function_enabled('imagecreatefromjpeg')) {
                                 $this->error = $this->translate('watermark_no_create_support', array('JPEG'));
                             } else {
                                 $filter = @imagecreatefromjpeg($this->image_watermark);
@@ -4072,7 +4090,7 @@ class upload {
                                 }
                             }
                         } else if ($watermark_type == IMAGETYPE_PNG) {
-                            if (!function_exists('imagecreatefrompng')) {
+                            if (!$this->function_enabled('imagecreatefrompng')) {
                                 $this->error = $this->translate('watermark_no_create_support', array('PNG'));
                             } else {
                                 $filter = @imagecreatefrompng($this->image_watermark);
