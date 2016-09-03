@@ -313,14 +313,6 @@ $handle->image_ratio_crop = true;
 ```php
 $handle->image_ratio_fill = true;
 ```
-* **image_ratio_no_zoom_in** same as `image_ratio`, but won't resize if the source image is smaller than `image_x` x `image_y` (default: false)
-```php
-$handle->image_ratio_no_zoom_in = true;
-```
-* **image_ratio_no_zoom_out** same as `image_ratio`, but won't resize if the source image is bigger than `image_x` x `image_y` (default: false)
-```php
-$handle->image_ratio_no_zoom_out = true;
-```
 * **image_ratio_x** if true, resize image, calculating `image_x` from `image_y` and conserving the original sizes ratio (default: false)
 ```php
 $handle->image_ratio_x = true;
@@ -332,6 +324,17 @@ $handle->image_ratio_y = true;
 * **image_ratio_pixels** if set to a long integer, resize image, calculating `image_y` and `image_x` to match a the number of pixels (default: false)
 ```php
 $handle->image_ratio_pixels = 25000;
+```
+
+And eventually prevent enlarging or shrinking images
+
+* **image_no_enlarging** cancel resizing if the resized image is bigger than the original image, to prevent enlarging (default: false)
+```php
+$handle->image_no_enlarging = true;
+```
+* **image_no_shrinking** cancel resizing if the resized image is smaller than the original image, to prevent shrinking (default: false)
+```php
+$handle->image_no_shrinking = true;
 ```
 
 ### Image effects
@@ -635,6 +638,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 * added support for UTF-8 text and TrueType fonts
 * remove deprecated properties
 * better checking of function availability
+* added `image_no_enlarging` and `image_no_shrinking` to replace `image_ratio_no_zoom_in` and `image_ratio_no_zoom_out`
 
 **v 0.33** 16/07/2016
 

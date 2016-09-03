@@ -583,28 +583,6 @@ class upload {
     var $image_ratio_pixels;
 
     /**
-     * Set this variable to keep the original size ratio to fit within {@link image_x} x {@link image_y},
-     * but only if original image is bigger
-     *
-     * Default value is false
-     *
-     * @access public
-     * @var bool
-     */
-    var $image_ratio_no_zoom_in;
-
-    /**
-     * Set this variable to keep the original size ratio to fit within {@link image_x} x {@link image_y},
-     * but only if original image is smaller
-     *
-     * Default value is false
-     *
-     * @access public
-     * @var bool
-     */
-    var $image_ratio_no_zoom_out;
-
-    /**
      * Set this variable to calculate {@link image_x} automatically , using {@link image_y} and conserving ratio
      *
      * Default value is false
@@ -623,6 +601,52 @@ class upload {
      * @var bool
      */
     var $image_ratio_y;
+
+    /**
+     * (deprecated) Set this variable to keep the original size ratio to fit within {@link image_x} x {@link image_y},
+     * but only if original image is bigger
+     *
+     * This setting is soon to be deprecated. Instead, use {@link image_ratio} and {@link image_no_enlarging}
+     *
+     * Default value is false
+     *
+     * @access public
+     * @var bool
+     */
+    var $image_ratio_no_zoom_in;
+
+    /**
+     * (deprecated) Set this variable to keep the original size ratio to fit within {@link image_x} x {@link image_y},
+     * but only if original image is smaller
+     *
+     * Default value is false
+     *
+     * This setting is soon to be deprecated. Instead, use {@link image_ratio} and {@link image_no_shrinking}
+     *
+     * @access public
+     * @var bool
+     */
+    var $image_ratio_no_zoom_out;
+
+    /**
+     * Cancel resizing if the resized image is bigger than the original image, to prevent enlarging
+     *
+     * Default value is false
+     *
+     * @access public
+     * @var bool
+     */
+    var $image_no_enlarging;
+
+    /**
+     * Cancel resizing if the resized image is smaller than the original image, to prevent shrinking
+     *
+     * Default value is false
+     *
+     * @access public
+     * @var bool
+     */
+    var $image_no_shrinking;
 
     /**
      * Set this variable to set a maximum image width, above which the upload will be invalid
@@ -1717,10 +1741,13 @@ class upload {
         $this->image_ratio_crop         = false;    // keeps aspect ratio with x and y dimensions, filling the space
         $this->image_ratio_fill         = false;    // keeps aspect ratio with x and y dimensions, fitting the image in the space, and coloring the rest
         $this->image_ratio_pixels       = false;    // keeps aspect ratio, calculating x and y so that the image is approx the set number of pixels
-        $this->image_ratio_no_zoom_in   = false;
-        $this->image_ratio_no_zoom_out  = false;
         $this->image_ratio_x            = false;    // calculate the $image_x if true
         $this->image_ratio_y            = false;    // calculate the $image_y if true
+        $this->image_ratio_no_zoom_in   = false;
+        $this->image_ratio_no_zoom_out  = false;
+        $this->image_no_enlarging       = false;
+        $this->image_no_shrinking       = false;
+
         $this->png_compression          = null;
         $this->jpeg_quality             = 85;
         $this->jpeg_size                = null;
@@ -3426,7 +3453,7 @@ class upload {
                                 break;
                             }
                         } else {
-                            $this->log .= '- EXIF data is invalid<br />';
+                            $this->log .= '- EXIF data is invalid or missing<br />';
                         }
 
                         // auto-flip image
@@ -3525,118 +3552,129 @@ class upload {
                     // resize image (and move image_src_x, image_src_y dimensions into image_dst_x, image_dst_y)
                     if ($this->image_resize) {
                         $this->log .= '- resizing...<br />';
+                        $this->image_dst_x = $this->image_x;
+                        $this->image_dst_y = $this->image_y;
 
+                        // backward compatibility for soon to be deprecated settings
+                        if ($this->image_ratio_no_zoom_in) {
+                            $this->image_ratio = true;
+                            $this->image_no_enlarging = true;
+                        } else if ($this->image_ratio_no_zoom_out) {
+                            $this->image_ratio = true;
+                            $this->image_no_shrinking = true;
+                        } 
+
+                        // keeps aspect ratio with x calculated from y
                         if ($this->image_ratio_x) {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;calculate x size<br />';
                             $this->image_dst_x = round(($this->image_src_x * $this->image_y) / $this->image_src_y);
                             $this->image_dst_y = $this->image_y;
+
+                        // keeps aspect ratio with y calculated from x
                         } else if ($this->image_ratio_y) {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;calculate y size<br />';
                             $this->image_dst_x = $this->image_x;
                             $this->image_dst_y = round(($this->image_src_y * $this->image_x) / $this->image_src_x);
+
+                        // keeps aspect ratio, calculating x and y so that the image is approx the set number of pixels
                         } else if (is_numeric($this->image_ratio_pixels)) {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;calculate x/y size to match a number of pixels<br />';
                             $pixels = $this->image_src_y * $this->image_src_x;
                             $diff = sqrt($this->image_ratio_pixels / $pixels);
                             $this->image_dst_x = round($this->image_src_x * $diff);
                             $this->image_dst_y = round($this->image_src_y * $diff);
-                        } else if ($this->image_ratio || $this->image_ratio_crop || $this->image_ratio_fill || $this->image_ratio_no_zoom_in || $this->image_ratio_no_zoom_out) {
-                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;check x/y sizes<br />';
-                            if ((!$this->image_ratio_no_zoom_in && !$this->image_ratio_no_zoom_out)
-                                 || ($this->image_ratio_no_zoom_in && ($this->image_src_x > $this->image_x || $this->image_src_y > $this->image_y))
-                                 || ($this->image_ratio_no_zoom_out && $this->image_src_x < $this->image_x && $this->image_src_y < $this->image_y)) {
-                                $this->image_dst_x = $this->image_x;
+
+                        // keeps aspect ratio with x and y dimensions, filling the space
+                        } else if ($this->image_ratio_crop) {
+                            if (!is_string($this->image_ratio_crop)) $this->image_ratio_crop = '';
+                            $this->image_ratio_crop = strtolower($this->image_ratio_crop);
+                            if (($this->image_src_x/$this->image_x) > ($this->image_src_y/$this->image_y)) {
                                 $this->image_dst_y = $this->image_y;
-                                if ($this->image_ratio_crop) {
-                                    if (!is_string($this->image_ratio_crop)) $this->image_ratio_crop = '';
-                                    $this->image_ratio_crop = strtolower($this->image_ratio_crop);
-                                    if (($this->image_src_x/$this->image_x) > ($this->image_src_y/$this->image_y)) {
-                                        $this->image_dst_y = $this->image_y;
-                                        $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
-                                        $ratio_crop = array();
-                                        $ratio_crop['x'] = $this->image_dst_x - $this->image_x;
-                                        if (strpos($this->image_ratio_crop, 'l') !== false) {
-                                            $ratio_crop['l'] = 0;
-                                            $ratio_crop['r'] = $ratio_crop['x'];
-                                        } else if (strpos($this->image_ratio_crop, 'r') !== false) {
-                                            $ratio_crop['l'] = $ratio_crop['x'];
-                                            $ratio_crop['r'] = 0;
-                                        } else {
-                                            $ratio_crop['l'] = round($ratio_crop['x']/2);
-                                            $ratio_crop['r'] = $ratio_crop['x'] - $ratio_crop['l'];
-                                        }
-                                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_x         : ' . $ratio_crop['x'] . ' (' . $ratio_crop['l'] . ';' . $ratio_crop['r'] . ')<br />';
-                                        if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
-                                    } else {
-                                        $this->image_dst_x = $this->image_x;
-                                        $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
-                                        $ratio_crop = array();
-                                        $ratio_crop['y'] = $this->image_dst_y - $this->image_y;
-                                        if (strpos($this->image_ratio_crop, 't') !== false) {
-                                            $ratio_crop['t'] = 0;
-                                            $ratio_crop['b'] = $ratio_crop['y'];
-                                        } else if (strpos($this->image_ratio_crop, 'b') !== false) {
-                                            $ratio_crop['t'] = $ratio_crop['y'];
-                                            $ratio_crop['b'] = 0;
-                                        } else {
-                                            $ratio_crop['t'] = round($ratio_crop['y']/2);
-                                            $ratio_crop['b'] = $ratio_crop['y'] - $ratio_crop['t'];
-                                        }
-                                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_y         : ' . $ratio_crop['y'] . ' (' . $ratio_crop['t'] . ';' . $ratio_crop['b'] . ')<br />';
-                                        if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
-                                    }
-                                } else if ($this->image_ratio_fill) {
-                                    if (!is_string($this->image_ratio_fill)) $this->image_ratio_fill = '';
-                                    $this->image_ratio_fill = strtolower($this->image_ratio_fill);
-                                    if (($this->image_src_x/$this->image_x) < ($this->image_src_y/$this->image_y)) {
-                                        $this->image_dst_y = $this->image_y;
-                                        $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
-                                        $ratio_crop = array();
-                                        $ratio_crop['x'] = $this->image_dst_x - $this->image_x;
-                                        if (strpos($this->image_ratio_fill, 'l') !== false) {
-                                            $ratio_crop['l'] = 0;
-                                            $ratio_crop['r'] = $ratio_crop['x'];
-                                        } else if (strpos($this->image_ratio_fill, 'r') !== false) {
-                                            $ratio_crop['l'] = $ratio_crop['x'];
-                                            $ratio_crop['r'] = 0;
-                                        } else {
-                                            $ratio_crop['l'] = round($ratio_crop['x']/2);
-                                            $ratio_crop['r'] = $ratio_crop['x'] - $ratio_crop['l'];
-                                        }
-                                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_x         : ' . $ratio_crop['x'] . ' (' . $ratio_crop['l'] . ';' . $ratio_crop['r'] . ')<br />';
-                                        if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
-                                    } else {
-                                        $this->image_dst_x = $this->image_x;
-                                        $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
-                                        $ratio_crop = array();
-                                        $ratio_crop['y'] = $this->image_dst_y - $this->image_y;
-                                        if (strpos($this->image_ratio_fill, 't') !== false) {
-                                            $ratio_crop['t'] = 0;
-                                            $ratio_crop['b'] = $ratio_crop['y'];
-                                        } else if (strpos($this->image_ratio_fill, 'b') !== false) {
-                                            $ratio_crop['t'] = $ratio_crop['y'];
-                                            $ratio_crop['b'] = 0;
-                                        } else {
-                                            $ratio_crop['t'] = round($ratio_crop['y']/2);
-                                            $ratio_crop['b'] = $ratio_crop['y'] - $ratio_crop['t'];
-                                        }
-                                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_y         : ' . $ratio_crop['y'] . ' (' . $ratio_crop['t'] . ';' . $ratio_crop['b'] . ')<br />';
-                                        if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
-                                    }
+                                $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
+                                $ratio_crop = array();
+                                $ratio_crop['x'] = $this->image_dst_x - $this->image_x;
+                                if (strpos($this->image_ratio_crop, 'l') !== false) {
+                                    $ratio_crop['l'] = 0;
+                                    $ratio_crop['r'] = $ratio_crop['x'];
+                                } else if (strpos($this->image_ratio_crop, 'r') !== false) {
+                                    $ratio_crop['l'] = $ratio_crop['x'];
+                                    $ratio_crop['r'] = 0;
                                 } else {
-                                    if (($this->image_src_x/$this->image_x) > ($this->image_src_y/$this->image_y)) {
-                                        $this->image_dst_x = $this->image_x;
-                                        $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
-                                    } else {
-                                        $this->image_dst_y = $this->image_y;
-                                        $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
-                                    }
+                                    $ratio_crop['l'] = round($ratio_crop['x']/2);
+                                    $ratio_crop['r'] = $ratio_crop['x'] - $ratio_crop['l'];
                                 }
+                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_x         : ' . $ratio_crop['x'] . ' (' . $ratio_crop['l'] . ';' . $ratio_crop['r'] . ')<br />';
+                                if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
                             } else {
-                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;doesn\'t calculate x/y sizes<br />';
-                                $this->image_dst_x = $this->image_src_x;
-                                $this->image_dst_y = $this->image_src_y;
+                                $this->image_dst_x = $this->image_x;
+                                $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
+                                $ratio_crop = array();
+                                $ratio_crop['y'] = $this->image_dst_y - $this->image_y;
+                                if (strpos($this->image_ratio_crop, 't') !== false) {
+                                    $ratio_crop['t'] = 0;
+                                    $ratio_crop['b'] = $ratio_crop['y'];
+                                } else if (strpos($this->image_ratio_crop, 'b') !== false) {
+                                    $ratio_crop['t'] = $ratio_crop['y'];
+                                    $ratio_crop['b'] = 0;
+                                } else {
+                                    $ratio_crop['t'] = round($ratio_crop['y']/2);
+                                    $ratio_crop['b'] = $ratio_crop['y'] - $ratio_crop['t'];
+                                }
+                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_crop_y         : ' . $ratio_crop['y'] . ' (' . $ratio_crop['t'] . ';' . $ratio_crop['b'] . ')<br />';
+                                if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
                             }
+
+                        // keeps aspect ratio with x and y dimensions, fitting the image in the space, and coloring the rest
+                        } else if ($this->image_ratio_fill) {
+                            if (!is_string($this->image_ratio_fill)) $this->image_ratio_fill = '';
+                            $this->image_ratio_fill = strtolower($this->image_ratio_fill);
+                            if (($this->image_src_x/$this->image_x) < ($this->image_src_y/$this->image_y)) {
+                                $this->image_dst_y = $this->image_y;
+                                $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
+                                $ratio_crop = array();
+                                $ratio_crop['x'] = $this->image_dst_x - $this->image_x;
+                                if (strpos($this->image_ratio_fill, 'l') !== false) {
+                                    $ratio_crop['l'] = 0;
+                                    $ratio_crop['r'] = $ratio_crop['x'];
+                                } else if (strpos($this->image_ratio_fill, 'r') !== false) {
+                                    $ratio_crop['l'] = $ratio_crop['x'];
+                                    $ratio_crop['r'] = 0;
+                                } else {
+                                    $ratio_crop['l'] = round($ratio_crop['x']/2);
+                                    $ratio_crop['r'] = $ratio_crop['x'] - $ratio_crop['l'];
+                                }
+                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_x         : ' . $ratio_crop['x'] . ' (' . $ratio_crop['l'] . ';' . $ratio_crop['r'] . ')<br />';
+                                if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
+                            } else {
+                                $this->image_dst_x = $this->image_x;
+                                $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
+                                $ratio_crop = array();
+                                $ratio_crop['y'] = $this->image_dst_y - $this->image_y;
+                                if (strpos($this->image_ratio_fill, 't') !== false) {
+                                    $ratio_crop['t'] = 0;
+                                    $ratio_crop['b'] = $ratio_crop['y'];
+                                } else if (strpos($this->image_ratio_fill, 'b') !== false) {
+                                    $ratio_crop['t'] = $ratio_crop['y'];
+                                    $ratio_crop['b'] = 0;
+                                } else {
+                                    $ratio_crop['t'] = round($ratio_crop['y']/2);
+                                    $ratio_crop['b'] = $ratio_crop['y'] - $ratio_crop['t'];
+                                }
+                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;ratio_fill_y         : ' . $ratio_crop['y'] . ' (' . $ratio_crop['t'] . ';' . $ratio_crop['b'] . ')<br />';
+                                if (is_null($this->image_crop)) $this->image_crop = array(0, 0, 0, 0);
+                            }
+
+                        // keeps aspect ratio with x and y dimensions
+                        } else if ($this->image_ratio) {
+                            if (($this->image_src_x/$this->image_x) > ($this->image_src_y/$this->image_y)) {
+                                $this->image_dst_x = $this->image_x;
+                                $this->image_dst_y = intval($this->image_src_y*($this->image_x / $this->image_src_x));
+                            } else {
+                                $this->image_dst_y = $this->image_y;
+                                $this->image_dst_x = intval($this->image_src_x*($this->image_y / $this->image_src_y));
+                            }
+
+                        // resize to provided exact dimensions
                         } else {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;use plain sizes<br />';
                             $this->image_dst_x = $this->image_x;
@@ -3645,19 +3683,37 @@ class upload {
 
                         if ($this->image_dst_x < 1) $this->image_dst_x = 1;
                         if ($this->image_dst_y < 1) $this->image_dst_y = 1;
-                        $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
-
-                        if ($gd_version >= 2) {
-                            $res = imagecopyresampled($tmp, $image_src, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
-                        } else {
-                            $res = imagecopyresized($tmp, $image_src, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
-                        }
-
-                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;resized image object created<br />';
                         $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;image_src_x y        : ' . $this->image_src_x . ' x ' . $this->image_src_y . '<br />';
                         $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;image_dst_x y        : ' . $this->image_dst_x . ' x ' . $this->image_dst_y . '<br />';
-                        // we transfert tmp into image_dst
-                        $image_dst = $this->imagetransfer($tmp, $image_dst);
+
+                        // make sure we don't enlarge the image if we don't want to
+                        if ($this->image_no_enlarging && ($this->image_src_x < $this->image_dst_x || $this->image_src_y < $this->image_dst_y)) {
+                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;cancel resizing, as it would enlarge the image!<br />';
+                            $this->image_dst_x = $this->image_src_x;
+                            $this->image_dst_y = $this->image_src_y;
+                        }
+
+                        // make sure we don't shrink the image if we don't want to
+                        if ($this->image_no_shrinking && ($this->image_src_x > $this->image_dst_x || $this->image_src_y > $this->image_dst_y)) {
+                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;cancel resizing, as it would shrink the image!<br />';
+                            $this->image_dst_x = $this->image_src_x;
+                            $this->image_dst_y = $this->image_src_y;
+                        }
+
+                        // resize the image
+                        if ($this->image_dst_x != $this->image_src_x && $this->image_dst_y != $this->image_src_y) {
+                            $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
+
+                            if ($gd_version >= 2) {
+                                $res = imagecopyresampled($tmp, $image_src, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                            } else {
+                                $res = imagecopyresized($tmp, $image_src, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_src_x, $this->image_src_y);
+                            }
+
+                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;resized image object created<br />';
+                             // we transfert tmp into image_dst
+                            $image_dst = $this->imagetransfer($tmp, $image_dst);
+                        }
 
                     } else {
                         $this->image_dst_x = $this->image_src_x;
