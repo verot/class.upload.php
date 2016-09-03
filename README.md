@@ -633,6 +633,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 **dev**
 
 * added support for UTF-8 text and TrueType fonts
+* remove deprecated properties
 
 **v 0.33** 16/07/2016
 

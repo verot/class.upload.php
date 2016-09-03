@@ -757,17 +757,6 @@ class upload {
     var $image_interlace;
 
     /**
-     * Preserve transparency when resizing or converting an image (deprecated)
-     *
-     * Default value is automatically set to true for transparent GIFs
-     * This setting is now deprecated
-     *
-     * @access public
-     * @var integer
-     */
-    var $preserve_transparency;
-
-    /**
      * Flag set to true when the image is transparent
      *
      * This is actually used only for transparent GIFs
@@ -913,14 +902,6 @@ class upload {
      * @var integer
      */
     var $image_overlay_opacity;
-
-    /**
-     * Soon to be deprecated old form of {@link image_overlay_opacity}
-     *
-     * @access public
-     * @var integer
-     */
-    var $image_overlay_percent;
 
     /**
      * Inverts the color of an image
@@ -1076,14 +1057,6 @@ class upload {
     var $image_text_opacity;
 
     /**
-     * Soon to be deprecated old form of {@link image_text_opacity}
-     *
-     * @access public
-     * @var integer
-     */
-    var $image_text_percent;
-
-    /**
      * Sets the text background color for the text label
      *
      * Value is an hexadecimal color, such as #FFFFFF
@@ -1106,14 +1079,6 @@ class upload {
      * @var integer
      */
     var $image_text_background_opacity;
-
-    /**
-     * Soon to be deprecated old form of {@link image_text_background_opacity}
-     *
-     * @access public
-     * @var integer
-     */
-    var $image_text_background_percent;
 
     /**
      * Sets the text font in the text label
@@ -1304,22 +1269,6 @@ class upload {
      * @var integer
      */
     var $image_reflection_space;
-
-    /**
-     * Sets the color of the reflection background (deprecated)
-     *
-     * Value is an hexadecimal color, such as #FFFFFF
-     *
-     * Default value is #FFFFFF
-     *
-     * This setting is relevant only if {@link image_reflection_height} is set
-     *
-     * This setting is now deprecated in favor of {@link image_default_color}
-     *
-     * @access public
-     * @var string;
-     */
-    var $image_reflection_color;
 
     /**
      * Sets the initial opacity of the reflection
@@ -1776,7 +1725,6 @@ class upload {
         $this->jpeg_quality             = 85;
         $this->jpeg_size                = null;
         $this->image_interlace          = false;
-        $this->preserve_transparency    = false;
         $this->image_is_transparent     = false;
         $this->image_transparent_color  = null;
         $this->image_background_color   = null;
@@ -1799,7 +1747,6 @@ class upload {
         $this->image_tint_color         = null;
         $this->image_overlay_color      = null;
         $this->image_overlay_opacity    = null;
-        $this->image_overlay_percent    = null;
         $this->image_negative           = false;
         $this->image_greyscale          = false;
         $this->image_pixelate           = null;
@@ -1812,10 +1759,8 @@ class upload {
         $this->image_text_direction     = null;
         $this->image_text_color         = '#FFFFFF';
         $this->image_text_opacity       = 100;
-        $this->image_text_percent       = 100;
         $this->image_text_background    = null;
         $this->image_text_background_opacity = 100;
-        $this->image_text_background_percent = 100;
         $this->image_text_font          = 5;
         $this->image_text_size          = 16;
         $this->image_text_angle         = null;
@@ -1830,7 +1775,6 @@ class upload {
 
         $this->image_reflection_height  = null;
         $this->image_reflection_space   = 2;
-        $this->image_reflection_color   = '#ffffff';
         $this->image_reflection_opacity = 60;
 
         $this->image_watermark          = null;
@@ -2924,10 +2868,6 @@ class upload {
         // clean up some parameters
         $this->file_max_size = $this->getsize($this->file_max_size);
         $this->jpeg_size = $this->getsize($this->jpeg_size);
-        // some parameters are being deprecated, and replaced with others
-        if (is_null($this->image_overlay_opacity)) $this->image_overlay_opacity = $this->image_overlay_percent;
-        if ($this->image_text_opacity == 100) $this->image_text_opacity = $this->image_text_percent;
-        if ($this->image_text_background_opacity == 100) $this->image_text_background_opacity = $this->image_text_background_percent;
 
         // copy some variables as we need to keep them clean
         $file_src_name = $this->file_src_name;
