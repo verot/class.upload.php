@@ -136,6 +136,19 @@ die();
 ```
 
 
+### Troubleshooting
+
+If the class doesn't do what you want it to do, you can display the log, in order to see in details what the class does. To obtain the log, just add this line at the end of your code:
+```php
+echo $handle->log;
+```
+
+Your problem may have been already discussed in the Frequently Asked Questions : [http://www.verot.net/php_class_upload_faq.htm](http://www.verot.net/php_class_upload_faq.htm)
+
+Failing that, you can search in the forums, and ask a question there:  [http://www.verot.net/php_class_upload_forum.htm](http://www.verot.net/php_class_upload_forum.htm). Please don't use Github issues to ask for help.
+
+
+
 ## Processing parameters
 
 
