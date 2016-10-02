@@ -2190,17 +2190,34 @@ class upload {
                 $this->uploaded = false;
                 $this->error = $this->translate('file_error');
             } else {
-                if (substr($file, 0, 4) == 'php:') {
-                    // this is a local filename, i.e.not uploaded
-                    $file = preg_replace('/^php:(.*)/i', '$1', $file);
-                    if (!$file) $file = $_SERVER['HTTP_X_FILE_NAME'];
-                    if (!$file) $file = 'unknown';
-                    $this->log .= '<b>' . $this->translate("source is a PHP stream") . ' ' . $file . '</b><br />';
-                    $this->no_upload_check = TRUE;
+                if (substr($file, 0, 4) == 'php:' || substr($file, 0, 5) == 'data:' || substr($file, 0, 7) == 'base64:') {
+                    $data = null;
 
-                    $this->log .= '- this is a PHP stream, requires a temp file ... ';
+                    // this is a PHP stream, i.e.not uploaded
+                    if (substr($file, 0, 4) == 'php:') {
+                        $file = preg_replace('/^php:(.*)/i', '$1', $file);
+                        if (!$file) $file = $_SERVER['HTTP_X_FILE_NAME'];
+                        if (!$file) $file = 'unknown';
+                        $data = file_get_contents('php://input');
+                        $this->log .= '<b>source is a PHP stream ' . $file . ' of length ' . strlen($data) . '</b><br />';
+
+                    // this is the raw file data, i.e.not uploaded
+                    } else if (substr($file, 0, 5) == 'data:') {
+                        $data = preg_replace('/^data:(.*)/i', '$1', $file);
+                        $file = 'data';
+                        $this->log .= '<b>source is a data string of length ' . strlen($data) . '</b><br />';
+
+                    // this is the raw file data, base64-encoded, i.e.not uploaded
+                    } else if (substr($file, 0, 7) == 'base64:') {
+                        $data = base64_decode(preg_replace('/^base64:(.*)/i', '$1', $file));
+                        $file = 'base64';
+                        $this->log .= '<b>source is a base64 data string of length ' . strlen($data) . '</b><br />';
+                    }
+
+                    $this->no_upload_check = TRUE;
+                    $this->log .= '- requires a temp file ... ';
                     $hash = $this->temp_dir() . md5($file . rand(1, 1000));
-                    if (file_put_contents($hash, file_get_contents('php://input'))) {
+                    if ($data && file_put_contents($hash, $data)) {
                         $this->file_src_pathname = $hash;
                         $this->log .= ' file created<br />';
                         $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;temp file is: ' . $this->file_src_pathname . '<br />';
@@ -2227,7 +2244,7 @@ class upload {
 
                 } else {
                     // this is a local filename, i.e.not uploaded
-                    $this->log .= '<b>' . $this->translate("source is a local file") . ' ' . $file . '</b><br />';
+                    $this->log .= '<b>source is a local file ' . $file . '</b><br />';
                     $this->no_upload_check = TRUE;
 
                     if ($this->uploaded && !file_exists($file)) {

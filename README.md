@@ -83,9 +83,18 @@ Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if
 
 
 
+### How to process local files?
+
+Instantiate the class with the local filename, as following:
+
+```php
+$handle = new upload('/home/user/myfile.jpg');
+```
+
+
 ### How to process a file uploaded via XMLHttpRequest?
 
-Use the class as following, the rest being the same as above:
+Instantiate the class with the special _php:_ keyword, as following:
 
 ```php
 $handle = new upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
@@ -97,12 +106,18 @@ Prefixing the argument with _php:_ tells the class to retrieve the uploaded data
 $handle = new upload('php:mycustomname.ext');
 ```
 
-### How to process local files?
+### How to process raw file data?
 
-Use the class as following, the rest being the same as above:
+Instantiate the class with the special _data:_ keyword, as following:
 
 ```php
-$handle = new upload('/home/user/myfile.jpg');
+$handle = new upload('data:'.$file_contents);
+```
+
+If your data is base64-encoded, the class provides a simple _base64:_ keyword, which will decode your data prior to using it:
+
+```php
+$handle = new upload('base64:'.$base64_file_contents);
 ```
 
 ### How to set the language?
@@ -649,6 +664,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 **dev**
 
 * added support for UTF-8 text and TrueType fonts
+* add support for raw file data and base64 encoded file data
 * remove deprecated properties
 * better checking of function availability
 * added `image_no_enlarging` and `image_no_shrinking` to replace `image_ratio_no_zoom_in` and `image_ratio_no_zoom_out`

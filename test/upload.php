@@ -59,8 +59,10 @@ $dir_pics = (isset($_GET['pics']) ? $_GET['pics'] : $dir_dest);
 <?php
 
 
-// we have three forms on the test page, so we redirect accordingly
-if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'simple') {
+// we have several forms on the test page, so we redirect accordingly
+$action = (isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : ''));
+
+if ($action == 'simple') {
 
     // ---------- SIMPLE UPLOAD ----------
 
@@ -108,7 +110,47 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
     }
 
 
-} else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'image') {
+} else if ($action == 'base64') {
+
+    // ---------- BASE64 FILE ----------
+
+    // we create an instance of the class, giving as argument the data string
+    $handle = new Upload('base64:'.(isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
+
+    // check if a temporary file has been created with the file data
+    if ($handle->uploaded) {
+
+        // yes, the file is on the server
+        $handle->Process($dir_dest);
+
+        // we check if everything went OK
+        if ($handle->processed) {
+            // everything was fine !
+            echo '<p class="result">';
+            echo '  <b>File uploaded with success</b><br />';
+            echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
+            echo '   (' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+            echo '</p>';
+        } else {
+            // one error occured
+            echo '<p class="result">';
+            echo '  <b>File not uploaded to the wanted location</b><br />';
+            echo '  Error: ' . $handle->error . '';
+            echo '</p>';
+        }
+
+        // we delete the temporary files
+        $handle-> Clean();
+
+    } else {
+        // if we're here, the file failed for some reasons
+        echo '<p class="result">';
+        echo '  <b>File not uploaded on the server</b><br />';
+        echo '  Error: ' . $handle->error . '';
+        echo '</p>';
+    }
+
+} else if ($action == 'image') {
 
     // ---------- IMAGE UPLOAD ----------
 
@@ -190,7 +232,7 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
     }
 
 
-} else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'xhr') {
+} else if ($action == 'xhr') {
 
     // ---------- XMLHttpRequest UPLOAD ----------
 
@@ -247,7 +289,7 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
     }
 
 
-} else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'multiple') {
+} else if ($action == 'multiple') {
 
     // ---------- MULTIPLE UPLOADS ----------
 
@@ -302,7 +344,7 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         }
     }
 
-} else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'local' || isset($_GET['file'])) {
+} else if ($action == 'local' || isset($_GET['file'])) {
 
     // ---------- LOCAL PROCESSING ----------
 
