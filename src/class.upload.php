@@ -3112,34 +3112,6 @@ class upload {
             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;file_dst_name_body    : ' . $this->file_dst_name_body . '<br />';
             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;file_dst_name_ext     : ' . $this->file_dst_name_ext . '<br />';
 
-            // do we do some image manipulation?
-            $image_manipulation  = ($this->file_is_image && (
-                                    $this->image_resize
-                                 || $this->image_convert != ''
-                                 || is_numeric($this->image_brightness)
-                                 || is_numeric($this->image_contrast)
-                                 || is_numeric($this->image_opacity)
-                                 || is_numeric($this->image_threshold)
-                                 || !empty($this->image_tint_color)
-                                 || !empty($this->image_overlay_color)
-                                 || $this->image_pixelate
-                                 || $this->image_unsharp
-                                 || !empty($this->image_text)
-                                 || $this->image_greyscale
-                                 || $this->image_negative
-                                 || !empty($this->image_watermark)
-                                 || $this->image_auto_rotate
-                                 || is_numeric($this->image_rotate)
-                                 || is_numeric($this->jpeg_size)
-                                 || !empty($this->image_flip)
-                                 || !empty($this->image_crop)
-                                 || !empty($this->image_precrop)
-                                 || !empty($this->image_border)
-                                 || !empty($this->image_border_transparent)
-                                 || $this->image_frame > 0
-                                 || $this->image_bevel > 0
-                                 || $this->image_reflection_height));
-
             // set the destination file name
             $this->file_dst_name = $this->file_dst_name_body . (!empty($this->file_dst_name_ext) ? '.' . $this->file_dst_name_ext : '');
 
@@ -3281,6 +3253,92 @@ class upload {
 
         if ($this->processed) {
 
+            // check if we need to autorotate, to automatically pre-rotates the image according to EXIF data (JPEG only)
+            $auto_flip = false;
+            $auto_rotate = 0;
+            if ($this->file_is_image && $this->image_auto_rotate && $this->image_src_type == 'jpg' && $this->function_enabled('exif_read_data')) {
+                $exif = @exif_read_data($this->file_src_pathname);
+                if (is_array($exif) && isset($exif['Orientation'])) {
+                    $orientation = $exif['Orientation'];
+                    switch($orientation) {
+                      case 1:
+                        $this->log .= '- EXIF orientation = 1 : default<br />';
+                        break;
+                      case 2:
+                        $auto_flip = 'v';
+                        $this->log .= '- EXIF orientation = 2 : vertical flip<br />';
+                        break;
+                      case 3:
+                        $auto_rotate = 180;
+                        $this->log .= '- EXIF orientation = 3 : 180 rotate left<br />';
+                        break;
+                      case 4:
+                        $auto_flip = 'h';
+                        $this->log .= '- EXIF orientation = 4 : horizontal flip<br />';
+                        break;
+                      case 5:
+                        $auto_flip = 'h';
+                        $auto_rotate = 90;
+                        $this->log .= '- EXIF orientation = 5 : horizontal flip + 90 rotate right<br />';
+                        break;
+                      case 6:
+                        $auto_rotate = 90;
+                        $this->log .= '- EXIF orientation = 6 : 90 rotate right<br />';
+                        break;
+                      case 7:
+                        $auto_flip = 'v';
+                        $auto_rotate = 90;
+                        $this->log .= '- EXIF orientation = 7 : vertical flip + 90 rotate right<br />';
+                        break;
+                      case 8:
+                        $auto_rotate = 270;
+                        $this->log .= '- EXIF orientation = 8 : 90 rotate left<br />';
+                        break;
+                      default:
+                        $this->log .= '- EXIF orientation = '.$orientation.' : unknown<br />';
+                        break;
+                    }
+                } else {
+                    $this->log .= '- EXIF data is invalid or missing<br />';
+                }
+            } else {
+                if (!$this->image_auto_rotate) {
+                    $this->log .= '- auto-rotate deactivated<br />';
+                } else if (!$this->image_src_type == 'jpg') {
+                    $this->log .= '- auto-rotate applies only to JPEG images<br />';
+                } else if (!$this->function_enabled('exif_read_data')) {
+                    $this->log .= '- auto-rotate requires function exif_read_data to be enabled<br />';
+                }
+            }
+
+            // do we do some image manipulation?
+            $image_manipulation  = ($this->file_is_image && (
+                                    $this->image_resize
+                                 || $this->image_convert != ''
+                                 || is_numeric($this->image_brightness)
+                                 || is_numeric($this->image_contrast)
+                                 || is_numeric($this->image_opacity)
+                                 || is_numeric($this->image_threshold)
+                                 || !empty($this->image_tint_color)
+                                 || !empty($this->image_overlay_color)
+                                 || $this->image_pixelate
+                                 || $this->image_unsharp
+                                 || !empty($this->image_text)
+                                 || $this->image_greyscale
+                                 || $this->image_negative
+                                 || !empty($this->image_watermark)
+                                 || $auto_rotate || $auto_flip
+                                 || is_numeric($this->image_rotate)
+                                 || is_numeric($this->jpeg_size)
+                                 || !empty($this->image_flip)
+                                 || !empty($this->image_crop)
+                                 || !empty($this->image_precrop)
+                                 || !empty($this->image_border)
+                                 || !empty($this->image_border_transparent)
+                                 || $this->image_frame > 0
+                                 || $this->image_bevel > 0
+                                 || $this->image_reflection_height));
+
             // we do a quick check to ensure the file is really an image
             // we can do this only now, as it would have failed before in case of open_basedir
             if ($image_manipulation && !@getimagesize($this->file_src_pathname)) {
@@ -3421,115 +3479,55 @@ class upload {
                         $this->image_is_palette = false;
                     }
 
-
                     $image_dst = & $image_src;
 
-                    // automatically pre-rotates the image according to EXIF data (JPEG only)
-                    if ($this->image_auto_rotate && $this->image_src_type == 'jpg' && $this->function_enabled('exif_read_data')) {
-                        $auto_flip = false;
-                        $auto_rotate = 0;
-                        $exif = @exif_read_data($this->file_src_pathname);
-                        if (is_array($exif) && isset($exif['Orientation'])) {
-                            $orientation = $exif['Orientation'];
-                            switch($orientation) {
-                              case 1:
-                                $this->log .= '- EXIF orientation = 1 : default<br />';
-                                break;
-                              case 2:
-                                $auto_flip = 'v';
-                                $this->log .= '- EXIF orientation = 2 : vertical flip<br />';
-                                break;
-                              case 3:
-                                $auto_rotate = 180;
-                                $this->log .= '- EXIF orientation = 3 : 180 rotate left<br />';
-                                break;
-                              case 4:
-                                $auto_flip = 'h';
-                                $this->log .= '- EXIF orientation = 4 : horizontal flip<br />';
-                                break;
-                              case 5:
-                                $auto_flip = 'h';
-                                $auto_rotate = 90;
-                                $this->log .= '- EXIF orientation = 5 : horizontal flip + 90 rotate right<br />';
-                                break;
-                              case 6:
-                                $auto_rotate = 90;
-                                $this->log .= '- EXIF orientation = 6 : 90 rotate right<br />';
-                                break;
-                              case 7:
-                                $auto_flip = 'v';
-                                $auto_rotate = 90;
-                                $this->log .= '- EXIF orientation = 7 : vertical flip + 90 rotate right<br />';
-                                break;
-                              case 8:
-                                $auto_rotate = 270;
-                                $this->log .= '- EXIF orientation = 8 : 90 rotate left<br />';
-                                break;
-                              default:
-                                $this->log .= '- EXIF orientation = '.$orientation.' : unknown<br />';
-                                break;
+                    // auto-flip image, according to EXIF data (JPEG only)
+                    if ($gd_version >= 2 && !empty($auto_flip)) {
+                        $this->log .= '- auto-flip image : ' . ($auto_flip == 'v' ? 'vertical' : 'horizontal') . '<br />';
+                        $tmp = $this->imagecreatenew($this->image_src_x, $this->image_src_y);
+                        for ($x = 0; $x < $this->image_src_x; $x++) {
+                            for ($y = 0; $y < $this->image_src_y; $y++){
+                                if (strpos($auto_flip, 'v') !== false) {
+                                    imagecopy($tmp, $image_dst, $this->image_src_x - $x - 1, $y, $x, $y, 1, 1);
+                                } else {
+                                    imagecopy($tmp, $image_dst, $x, $this->image_src_y - $y - 1, $x, $y, 1, 1);
+                                }
                             }
-                        } else {
-                            $this->log .= '- EXIF data is invalid or missing<br />';
                         }
+                        // we transfert tmp into image_dst
+                        $image_dst = $this->imagetransfer($tmp, $image_dst);
+                    }
 
-                        // auto-flip image
-                        if ($gd_version >= 2 && !empty($auto_flip)) {
-                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;auto-flip image : ' . $auto_flip . '<br />';
-                            $tmp = $this->imagecreatenew($this->image_src_x, $this->image_src_y);
+                    // auto-rotate image, according to EXIF data (JPEG only)
+                    if ($gd_version >= 2 && is_numeric($auto_rotate)) {
+                        if (!in_array($auto_rotate, array(0, 90, 180, 270))) $auto_rotate = 0;
+                        if ($auto_rotate != 0) {
+                            if ($auto_rotate == 90 || $auto_rotate == 270) {
+                                $tmp = $this->imagecreatenew($this->image_src_y, $this->image_src_x);
+                            } else {
+                                $tmp = $this->imagecreatenew($this->image_src_x, $this->image_src_y);
+                            }
+                            $this->log .= '- auto-rotate image : ' . $auto_rotate . '<br />';
                             for ($x = 0; $x < $this->image_src_x; $x++) {
                                 for ($y = 0; $y < $this->image_src_y; $y++){
-                                    if (strpos($auto_flip, 'v') !== false) {
-                                        imagecopy($tmp, $image_dst, $this->image_src_x - $x - 1, $y, $x, $y, 1, 1);
+                                    if ($auto_rotate == 90) {
+                                        imagecopy($tmp, $image_dst, $y, $x, $x, $this->image_src_y - $y - 1, 1, 1);
+                                    } else if ($auto_rotate == 180) {
+                                        imagecopy($tmp, $image_dst, $x, $y, $this->image_src_x - $x - 1, $this->image_src_y - $y - 1, 1, 1);
+                                    } else if ($auto_rotate == 270) {
+                                        imagecopy($tmp, $image_dst, $y, $x, $this->image_src_x - $x - 1, $y, 1, 1);
                                     } else {
-                                        imagecopy($tmp, $image_dst, $x, $this->image_src_y - $y - 1, $x, $y, 1, 1);
+                                        imagecopy($tmp, $image_dst, $x, $y, $x, $y, 1, 1);
                                     }
                                 }
+                            }
+                            if ($auto_rotate == 90 || $auto_rotate == 270) {
+                                $t = $this->image_src_y;
+                                $this->image_src_y = $this->image_src_x;
+                                $this->image_src_x = $t;
                             }
                             // we transfert tmp into image_dst
                             $image_dst = $this->imagetransfer($tmp, $image_dst);
-                        }
-
-                        // auto-rotate image
-                        if ($gd_version >= 2 && is_numeric($auto_rotate)) {
-                            if (!in_array($auto_rotate, array(0, 90, 180, 270))) $auto_rotate = 0;
-                            if ($auto_rotate != 0) {
-                                if ($auto_rotate == 90 || $auto_rotate == 270) {
-                                    $tmp = $this->imagecreatenew($this->image_src_y, $this->image_src_x);
-                                } else {
-                                    $tmp = $this->imagecreatenew($this->image_src_x, $this->image_src_y);
-                                }
-                                $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;auto-rotate image : ' . $auto_rotate . '<br />';
-                                for ($x = 0; $x < $this->image_src_x; $x++) {
-                                    for ($y = 0; $y < $this->image_src_y; $y++){
-                                        if ($auto_rotate == 90) {
-                                            imagecopy($tmp, $image_dst, $y, $x, $x, $this->image_src_y - $y - 1, 1, 1);
-                                        } else if ($auto_rotate == 180) {
-                                            imagecopy($tmp, $image_dst, $x, $y, $this->image_src_x - $x - 1, $this->image_src_y - $y - 1, 1, 1);
-                                        } else if ($auto_rotate == 270) {
-                                            imagecopy($tmp, $image_dst, $y, $x, $this->image_src_x - $x - 1, $y, 1, 1);
-                                        } else {
-                                            imagecopy($tmp, $image_dst, $x, $y, $x, $y, 1, 1);
-                                        }
-                                    }
-                                }
-                                if ($auto_rotate == 90 || $auto_rotate == 270) {
-                                    $t = $this->image_src_y;
-                                    $this->image_src_y = $this->image_src_x;
-                                    $this->image_src_x = $t;
-                                }
-                                // we transfert tmp into image_dst
-                                $image_dst = $this->imagetransfer($tmp, $image_dst);
-                            }
-                        }
-
-                    } else {
-                        if (!$this->image_auto_rotate) {
-                            $this->log .= '- auto-rotate deactivated<br />';
-                        } else if (!$this->image_src_type == 'jpg') {
-                            $this->log .= '- auto-rotate applies only to JPEG images<br />';
-                        } else if (!$this->function_enabled('exif_read_data')) {
-                            $this->log .= '- auto-rotate requires function exif_read_data to be enabled<br />';
                         }
                     }
 

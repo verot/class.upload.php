@@ -500,7 +500,7 @@ $handle->image_text_line_spacing = 3;
 ### Image transformations
 
 
-* **image_auto_rotate** automatically rotates the image according to EXIF data (JPEG only) (default: true)
+* **image_auto_rotate** automatically rotates the image according to EXIF data (JPEG only) (default: true, applies even if there is no image manipulations)
 ```php
 $handle->image_auto_rotate = false;
 ```
@@ -668,6 +668,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 * remove deprecated properties
 * better checking of function availability
 * added `image_no_enlarging` and `image_no_shrinking` to replace `image_ratio_no_zoom_in` and `image_ratio_no_zoom_out`
+* checks JPEG auto-rotate even if there is no image manipulation
 
 **v 0.33** 16/07/2016
 
