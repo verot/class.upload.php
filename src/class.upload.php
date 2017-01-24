@@ -2712,6 +2712,7 @@ class upload {
      * @return integer Size in bytes
      */
     function getsize($size) {
+        if ($size === null) return null;
         $last = strtolower($size{strlen($size)-1});
         $size = (int) $size;
         switch($last) {
