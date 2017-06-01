@@ -2210,22 +2210,31 @@ class upload {
 
                     // this is the raw file data, base64-encoded, i.e.not uploaded
                     } else if (substr($file, 0, 7) == 'base64:') {
-                        $data = base64_decode(preg_replace('/^base64:(.*)/i', '$1', $file));
+                        $data = base64_decode(preg_replace('/^base64:(?:.*base64,)?(.*)/i', '$1', $file));
                         $file = 'base64';
                         $this->log .= '<b>source is a base64 data string of length ' . strlen($data) . '</b><br />';
                     }
 
-                    $this->no_upload_check = TRUE;
-                    $this->log .= '- requires a temp file ... ';
-                    $hash = $this->temp_dir() . md5($file . rand(1, 1000));
-                    if ($data && file_put_contents($hash, $data)) {
-                        $this->file_src_pathname = $hash;
-                        $this->log .= ' file created<br />';
-                        $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;temp file is: ' . $this->file_src_pathname . '<br />';
-                    } else {
-                        $this->log .= ' failed<br />';
+                    if (!$data) {
+                        $this->log .= '- source is empty!<br />';
                         $this->uploaded = false;
-                        $this->error = $this->translate('temp_file');
+                        $this->error = $this->translate('source_invalid');
+                    }
+
+                    $this->no_upload_check = TRUE;
+
+                    if ($this->uploaded) {
+                        $this->log .= '- requires a temp file ... ';
+                        $hash = $this->temp_dir() . md5($file . rand(1, 1000));
+                        if ($data && file_put_contents($hash, $data)) {
+                            $this->file_src_pathname = $hash;
+                            $this->log .= ' file created<br />';
+                            $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;temp file is: ' . $this->file_src_pathname . '<br />';
+                        } else {
+                            $this->log .= ' failed<br />';
+                            $this->uploaded = false;
+                            $this->error = $this->translate('temp_file');
+                        }
                     }
 
                     if ($this->uploaded) {
