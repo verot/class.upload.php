@@ -2066,7 +2066,7 @@ class upload {
 
         $this->uploaded           = true;
         $this->no_upload_check    = false;
-        $this->processed          = true;
+        $this->processed          = false;
         $this->error              = '';
         $this->log                = '';
         $this->allowed            = array();
