@@ -2526,9 +2526,15 @@ class upload {
             }
 
             // determine whether the file is an image
-            if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime) && array_key_exists($this->file_src_mime, $this->image_supported)) {
+            if (!empty($this->file_src_mime) && is_string($this->file_src_mime) && array_key_exists($this->file_src_mime, $this->image_supported)) {
                 $this->file_is_image = true;
                 $this->image_src_type = $this->image_supported[$this->file_src_mime];
+            } else {
+                if (empty($this->file_src_mime)) {
+                    $this->log .= "No mime in file_src_mime.<br />\n";
+                } else if (!array_key_exists($this->file_src_mime, $this->image_supported)) {
+                    $this->log .= "{$this->file_src_mime} Not supported.<br />\n";
+                }
             }
 
             // if the file is an image, we gather some useful data
