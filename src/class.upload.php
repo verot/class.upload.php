@@ -2530,6 +2530,11 @@ class upload {
                 $this->file_is_image = true;
                 $this->image_src_type = $this->image_supported[$this->file_src_mime];
             }
+            
+            if ($this->file_src_mime === "image/x-ms-bmp") {
+               $this->file_src_mime = "image/bmp";
+               $this->log .= 'New MIME type set to ' . $this->file_src_mime . ' for incopatibility with Chrome<br />';
+            }
 
             // if the file is an image, we gather some useful data
             if ($this->file_is_image) {
