@@ -2531,6 +2531,11 @@ class upload {
                 $this->image_src_type = $this->image_supported[$this->file_src_mime];
             }
 
+            if ($this->file_src_mime === "image/x-ms-bmp") {
+               $this->file_src_mime = "image/bmp";
+               $this->log .= 'New MIME type set to ' . $this->file_src_mime . ' for incopatibility with Chrome<br />';
+            }
+
             // if the file is an image, we gather some useful data
             if ($this->file_is_image) {
                 if ($h = fopen($this->file_src_pathname, 'r')) {
@@ -4903,7 +4908,7 @@ class upload {
         if ($bmp['decal'] == 4) $bmp['decal'] = 0;
 
         $palette = array();
-        if ($bmp['colors'] < 16777216) {
+        if ($bmp['colors'] < 16777216 && $bmp['colors'] != 65536) {
             $palette = unpack('V'.$bmp['colors'], fread($f1,$bmp['colors']*4));
         }
 
@@ -4919,8 +4924,11 @@ class upload {
                 if ($bmp['bits_per_pixel'] == 24)
                     $color = unpack("V",substr($im,$P,3).$vide);
                 elseif ($bmp['bits_per_pixel'] == 16) {
-                    $color = unpack("n",substr($im,$P,2));
-                    $color[1] = $palette[$color[1]+1];
+                    $color = unpack("v",substr($im,$P,2));
+                    $blue = ($color[1] & 0x001f) << 3;
+                    $green = ($color[1] & 0x07e0) >> 3;
+                    $red = ($color[1] & 0xf800) >> 8;
+                    $color[1] = $red * 65536 + $green * 256 + $blue;
                 } elseif ($bmp['bits_per_pixel'] == 8) {
                     $color = unpack("n",$vide.substr($im,$P,1));
                     $color[1] = $palette[$color[1]+1];
