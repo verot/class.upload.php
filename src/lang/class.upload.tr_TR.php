@@ -1,3 +1,4 @@
+
 <?php
 // +------------------------------------------------------------------------+
 // | class.upload.tr_TR.php                                                 |
@@ -34,6 +35,7 @@
  * @author    Volkan Metin (metinsoft@gmail.com)
  * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Volkan Metin
+ * @edit Taner İnanır
  * @package   cmf
  * @subpackage external
  */
@@ -51,14 +53,14 @@
     $translation['file_too_big']                = 'Dosya izin verilenden büyük.';
     $translation['no_mime']                     = 'Dosya türü bulunamadı.';
     $translation['incorrect_file']              = 'Bu dosyanın uzantısı geçersiz.';
-    $translation['image_too_wide']              = 'Resim izin verilenden çok geniş.';
-    $translation['image_too_narrow']            = 'Resim izin verilenden çok dar.';
-    $translation['image_too_high']              = 'Resim izin verilenden çok uzun.';
-    $translation['image_too_short']             = 'Resim izin verilenden çok kısa.';
-    $translation['ratio_too_high']              = 'Resim oranı çok yüksek (resim çok geniş).';
-    $translation['ratio_too_low']               = 'Resim oranı çok düşük (resim çok uzun).';
-    $translation['too_many_pixels']             = 'Resim izin verilenden büyük.';
-    $translation['not_enough_pixels']           = 'Resim izin verilenden küçük.';
+    $translation['image_too_wide']              = 'Fotoğraf izin verilenden çok geniş.';
+    $translation['image_too_narrow']            = 'Fotoğraf izin verilenden çok dar.';
+    $translation['image_too_high']              = 'Fotoğraf izin verilenden çok uzun.';
+    $translation['image_too_short']             = 'Fotoğraf izin verilenden çok kısa.';
+    $translation['ratio_too_high']              = 'Fotoğraf oranı çok yüksek (fotoğraf çok geniş).';
+    $translation['ratio_too_low']               = 'Fotoğraf oranı çok düşük (fotoğraf çok uzun).';
+    $translation['too_many_pixels']             = 'Fotoğraf izin verilenden büyük.';
+    $translation['not_enough_pixels']           = 'Fotoğraf izin verilenden küçük.';
     $translation['file_not_uploaded']           = 'Dosya yüklenemedi. İşlem sonlandırıldı.';
     $translation['already_exists']              = '%s dosyası zaten var. Lütfen dosyanızın ismini değiştirerek tekrar deneyiniz.';
     $translation['temp_file_missing']           = 'Temp dizini doğru belirtilmemiş. İşlem sonlandırıldı.';
@@ -71,11 +73,11 @@
     $translation['temp_file']                   = 'Geçici dizine (temp) yazılamıyor. İzinleri kontrol etmelisiniz. İşlem sonlandırıldı.';
     $translation['source_not_readable']         = 'Dosyanın içeriği okunamadı. İşlem sonlandırıldı.';
     $translation['no_create_support']           = '%s dosyası oluşturulamadı.';
-    $translation['create_error']                = 'Kaynaktan %s resmi oluşturulurken hata oluştu.';
-    $translation['source_invalid']              = 'Resim dosyası okunamadı. Dosyanın bir resim olduğundan emin misiniz?';
+    $translation['create_error']                = 'Kaynaktan %s fotoğrafı oluşturulurken hata oluştu.';
+    $translation['source_invalid']              = 'Fotoğraf dosyası okunamadı. Dosyanın bir fotoğraf olduğundan emin misiniz?';
     $translation['gd_missing']                  = 'Sunucuda GD kütüphanesi olmadığı için işleme devam edemiyorsunuz.';
-    $translation['watermark_no_create_support'] = '%s resmi oluşturulamadığı için filigran oluşturulamadı.';
-    $translation['watermark_create_error']      = '%s resmi okunamadığı için filigran oluşturulamadı.';
+    $translation['watermark_no_create_support'] = '%s fotoğrafı oluşturulamadığı için filigran oluşturulamadı.';
+    $translation['watermark_create_error']      = '%s fotoğrafı okunamadığı için filigran oluşturulamadı.';
     $translation['watermark_invalid']           = 'Bilinmeyen dosya türü. Filigran oluşturulamadı.';
     $translation['file_create']                 = '%s dosyası oluşturulamadı.';
     $translation['no_conversion_type']          = 'Belirtilen dosya türü dönüştürülemedi.';
@@ -83,3 +85,4 @@
     $translation['reading_failed']              = 'Dosya okunurken hata oluştu.';   
         
 ?>
+
