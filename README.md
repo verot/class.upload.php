@@ -4,6 +4,8 @@ Homepage : [http://www.verot.net/php_class_upload.htm](http://www.verot.net/php_
 
 Demo : [http://www.verot.net/php_class_upload_samples.htm](http://www.verot.net/php_class_upload_samples.htm)
 
+Donations: [http://www.verot.net/php_class_upload_donate.htm](http://www.verot.net/php_class_upload_donate.htm)
+
 Commercial use: [http://www.verot.net/php_class_upload_license.htm](http://www.verot.net/php_class_upload_license.htm)
 
 
