@@ -3718,6 +3718,7 @@ class upload {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;cancel resizing, as it would enlarge the image!<br />';
                             $this->image_dst_x = $this->image_src_x;
                             $this->image_dst_y = $this->image_src_y;
+                            $ratio_crop = null;
                         }
 
                         // make sure we don't shrink the image if we don't want to
@@ -3725,6 +3726,7 @@ class upload {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;cancel resizing, as it would shrink the image!<br />';
                             $this->image_dst_x = $this->image_src_x;
                             $this->image_dst_y = $this->image_src_y;
+                            $ratio_crop = null;
                         }
 
                         // resize the image
@@ -3757,34 +3759,36 @@ class upload {
                             if (array_key_exists('b', $ratio_crop)) $cb += $ratio_crop['b'];
                             if (array_key_exists('l', $ratio_crop)) $cl += $ratio_crop['l'];
                         }
-                        $this->log .= '- crop image : ' . $ct . ' ' . $cr . ' ' . $cb . ' ' . $cl . ' <br />';
-                        $this->image_dst_x = $this->image_dst_x - $cl - $cr;
-                        $this->image_dst_y = $this->image_dst_y - $ct - $cb;
-                        if ($this->image_dst_x < 1) $this->image_dst_x = 1;
-                        if ($this->image_dst_y < 1) $this->image_dst_y = 1;
-                        $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
+                        if ($ct != 0 || $cr != 0 || $cb != 0 || $cl != 0) {
+                            $this->log .= '- crop image : ' . $ct . ' ' . $cr . ' ' . $cb . ' ' . $cl . ' <br />';
+                            $this->image_dst_x = $this->image_dst_x - $cl - $cr;
+                            $this->image_dst_y = $this->image_dst_y - $ct - $cb;
+                            if ($this->image_dst_x < 1) $this->image_dst_x = 1;
+                            if ($this->image_dst_y < 1) $this->image_dst_y = 1;
+                            $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
 
-                        // we copy the image into the recieving image
-                        imagecopy($tmp, $image_dst, 0, 0, $cl, $ct, $this->image_dst_x, $this->image_dst_y);
+                            // we copy the image into the recieving image
+                            imagecopy($tmp, $image_dst, 0, 0, $cl, $ct, $this->image_dst_x, $this->image_dst_y);
 
-                        // if we crop with negative margins, we have to make sure the extra bits are the right color, or transparent
-                        if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0 ) {
-                            // use the background color if present
-                            if (!empty($this->image_background_color)) {
-                                list($red, $green, $blue) = $this->getcolors($this->image_background_color);
-                                $fill = imagecolorallocate($tmp, $red, $green, $blue);
-                            } else {
-                                $fill = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
+                            // if we crop with negative margins, we have to make sure the extra bits are the right color, or transparent
+                            if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0 ) {
+                                // use the background color if present
+                                if (!empty($this->image_background_color)) {
+                                    list($red, $green, $blue) = $this->getcolors($this->image_background_color);
+                                    $fill = imagecolorallocate($tmp, $red, $green, $blue);
+                                } else {
+                                    $fill = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
+                                }
+                                // fills eventual negative margins
+                                if ($ct < 0) imagefilledrectangle($tmp, 0, 0, $this->image_dst_x, -$ct-1, $fill);
+                                if ($cr < 0) imagefilledrectangle($tmp, $this->image_dst_x + $cr, 0, $this->image_dst_x, $this->image_dst_y, $fill);
+                                if ($cb < 0) imagefilledrectangle($tmp, 0, $this->image_dst_y + $cb, $this->image_dst_x, $this->image_dst_y, $fill);
+                                if ($cl < 0) imagefilledrectangle($tmp, 0, 0, -$cl-1, $this->image_dst_y, $fill);
                             }
-                            // fills eventual negative margins
-                            if ($ct < 0) imagefilledrectangle($tmp, 0, 0, $this->image_dst_x, -$ct-1, $fill);
-                            if ($cr < 0) imagefilledrectangle($tmp, $this->image_dst_x + $cr, 0, $this->image_dst_x, $this->image_dst_y, $fill);
-                            if ($cb < 0) imagefilledrectangle($tmp, 0, $this->image_dst_y + $cb, $this->image_dst_x, $this->image_dst_y, $fill);
-                            if ($cl < 0) imagefilledrectangle($tmp, 0, 0, -$cl-1, $this->image_dst_y, $fill);
-                        }
 
-                        // we transfert tmp into image_dst
-                        $image_dst = $this->imagetransfer($tmp, $image_dst);
+                            // we transfert tmp into image_dst
+                            $image_dst = $this->imagetransfer($tmp, $image_dst);
+                        }
                     }
 
                     // flip image
