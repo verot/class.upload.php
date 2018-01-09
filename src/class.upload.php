@@ -2202,17 +2202,23 @@ class upload {
                         $data = file_get_contents('php://input');
                         $this->log .= '<b>source is a PHP stream ' . $file . ' of length ' . strlen($data) . '</b><br />';
 
+                    // this is the raw file data, base64-encoded, i.e.not uploaded
+                    } else if (substr($file, 0, 7) == 'base64:') {
+                        $data = base64_decode(preg_replace('/^base64:(.*)/i', '$1', $file));
+                        $file = 'base64';
+                        $this->log .= '<b>source is a base64 string of length ' . strlen($data) . '</b><br />';
+
+                    // this is the raw file data, base64-encoded, i.e.not uploaded
+                    } else if (substr($file, 0, 5) == 'data:' && strpos($file, 'base64,') !== false) {
+                        $data = base64_decode(preg_replace('/^data:.*base64,(.*)/i', '$1', $file));
+                        $file = 'base64';
+                        $this->log .= '<b>source is a base64 data string of length ' . strlen($data) . '</b><br />';
+
                     // this is the raw file data, i.e.not uploaded
                     } else if (substr($file, 0, 5) == 'data:') {
                         $data = preg_replace('/^data:(.*)/i', '$1', $file);
                         $file = 'data';
                         $this->log .= '<b>source is a data string of length ' . strlen($data) . '</b><br />';
-
-                    // this is the raw file data, base64-encoded, i.e.not uploaded
-                    } else if (substr($file, 0, 7) == 'base64:') {
-                        $data = base64_decode(preg_replace('/^base64:(?:.*base64,)?(.*)/i', '$1', $file));
-                        $file = 'base64';
-                        $this->log .= '<b>source is a base64 data string of length ' . strlen($data) . '</b><br />';
                     }
 
                     if (!$data) {

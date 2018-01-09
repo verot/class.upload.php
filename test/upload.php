@@ -115,7 +115,7 @@ if ($action == 'simple') {
     // ---------- BASE64 FILE ----------
 
     // we create an instance of the class, giving as argument the data string
-    $handle = new Upload('base64:'.(isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
+    $handle = new Upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
 
     // check if a temporary file has been created with the file data
     if ($handle->uploaded) {
