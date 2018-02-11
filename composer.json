@@ -4,7 +4,7 @@
     "type": "library",
     "homepage":"http://www.verot.net/php_class_upload.htm",
     "keywords": ["upload", "gd"],
-    "license": "GPLv2",
+    "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "Colin Verot",
