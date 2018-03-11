@@ -663,7 +663,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 
 ## Changelog
 
-**dev**
+**v 0.34** 11/03/2018
 
 * added support for UTF-8 text and TrueType fonts
 * add support for raw file data and base64 encoded file data
@@ -671,6 +671,9 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 * better checking of function availability
 * added `image_no_enlarging` and `image_no_shrinking` to replace `image_ratio_no_zoom_in` and `image_ratio_no_zoom_out`
 * checks JPEG auto-rotate even if there is no image manipulation
+* better handling of base64 input and error reporting
+* updated Swedish and Turkish translation
+* better file name sanitization
 
 **v 0.33** 16/07/2016
 
