@@ -2,7 +2,7 @@
 // +------------------------------------------------------------------------+
 // | class.upload.php                                                       |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Colin Verot 2003-2014. All rights reserved.              |
+// | Copyright (c) Colin Verot 2003-2018. All rights reserved.              |
 // | Email         colin@verot.net                                          |
 // | Web           http://www.verot.net                                     |
 // +------------------------------------------------------------------------+
@@ -2038,7 +2038,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '0.34';
+        $this->version            = '0.35';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
@@ -2724,11 +2724,9 @@ class upload {
         // remove illegal file system characters
         $filename = str_replace(array_map('chr', range(0, 31)), '', $filename);
         // remove dangerous characters for file names
-        $chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&",
-                       "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", "^", chr(0));
-        $filename = str_replace($chars, '', $filename);
-        // convert spaces into dashes
-        $filename = str_replace(array( '%20', '+' ), '-', $filename);
+        $chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "’", "%20",
+                       "+", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", "^", chr(0));
+        $filename = str_replace($chars, '-', $filename);
         // remove break/tabs/return carriage
         $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
         // convert some special letters
@@ -2739,8 +2737,6 @@ class upload {
         $filename = html_entity_decode( $filename, ENT_QUOTES, "utf-8" );
         $filename = htmlentities($filename, ENT_QUOTES, "utf-8");
         $filename = preg_replace("/(&)([a-z])([a-z]+;)/i", '$2', $filename);
-        // convert to lower case
-        $filename = extension_loaded('mbstring') ? mb_strtolower($filename, mb_detect_encoding($filename)) : strtolower($filename);
         // clean up, and remove repetitions
         $filename = preg_replace(array('/ +/', '/_+/', '/-+/'), '-', $filename);
         $filename = preg_replace(array('/-*\.-*/', '/\.{2,}/'), '.', $filename);
