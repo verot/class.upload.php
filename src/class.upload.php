@@ -2704,6 +2704,47 @@ class upload {
     }
 
     /**
+     * Sanitize a file name
+     *
+     * @access private
+     * @param  string  $filename File name
+     * @return string Sanitized file name
+     */
+    function sanitize($filename) {
+        // remove HTML tags
+        $filename = strip_tags($filename);
+        // remove non-breaking spaces
+        $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
+        // remove illegal file system characters
+        $filename = str_replace(array_map('chr', range(0, 31)), '', $filename);
+        // remove dangerous characters for file names
+        $chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", "^", chr(0));
+        $filename = str_replace($chars, '', $filename);
+        // convert spaces into dashes
+        $filename = str_replace(array( '%20', '+' ), '-', $filename);
+        // remove break/tabs/return carriage
+        $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
+        // convert some special letters
+        $convert = array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', 'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u');
+        $filename = strtr($filename, $convert);
+        // remove foreign accents by converting to HTML entities, and then remove the code
+        $filename = html_entity_decode( $filename, ENT_QUOTES, "utf-8" );
+        $filename = htmlentities($filename, ENT_QUOTES, "utf-8");
+        $filename = preg_replace("/(&)([a-z])([a-z]+;)/i", '$2', $filename);
+        // convert to lower case
+        $filename = extension_loaded('mbstring') ? mb_strtolower($filename, mb_detect_encoding($filename)) : strtolower($filename);
+        // clean up, and remove repetitions
+        $filename = preg_replace(array('/ +/', '/_+/', '/-+/'), '-', $filename);
+        $filename = preg_replace(array('/-*\.-*/', '/\.{2,}/'), '.', $filename);
+        // cut to 255 characters
+        $length = 255 - strlen($this->file_dst_name_ext) + 1;
+        $filename = extension_loaded('mbstring') ? mb_strcut($filename, 0, $length, mb_detect_encoding($filename)) : substr($filename, 0, $length);
+        // remove bad characters at start and end
+        $filename = trim($filename, '.-_');
+        return $filename;
+    }
+
+    /**
      * Decodes colors
      *
      * @access private
@@ -3114,10 +3155,8 @@ class upload {
                 $this->file_dst_name_body  = $this->file_name_body_pre . $this->file_dst_name_body;
                 $this->log .= '- file name body prepend : ' . $this->file_name_body_pre . '<br />';
             }
-            if ($this->file_safe_name) { // formats the name
-                $this->file_dst_name_body = utf8_encode(strtr(utf8_decode($this->file_dst_name_body), utf8_decode('ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ'), 'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'));
-                $this->file_dst_name_body = strtr($this->file_dst_name_body, array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', 'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
-                $this->file_dst_name_body = preg_replace(array('/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('_', '.', ''), $this->file_dst_name_body);
+            if ($this->file_safe_name) { // sanitize the name
+                $this->file_dst_name_body = $this->sanitize($this->file_dst_name_body);
                 $this->log .= '- file name safe format<br />';
             }
 
