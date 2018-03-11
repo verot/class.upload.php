@@ -2038,7 +2038,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '0.35';
+        $this->version            = '0.35dev';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';

@@ -663,7 +663,7 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 
 ## Changelog
 
-**v 0.35** 11/03/2018
+**master**
 
 * better file name sanitization
 
