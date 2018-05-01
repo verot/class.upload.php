@@ -4792,7 +4792,7 @@ class upload {
                         case 'jpeg':
                         case 'jpg':
                             if (!$return_mode) {
-                                $result = @imagejpeg($image_dst, $this->file_dst_pathname, $this->jpeg_quality);
+                               $result = @imagejpeg($image_dst, $this->file_dst_path . '/' . $this->file_dst_name_body .'.jpg', $this->jpeg_quality);
                             } else {
                                 ob_start();
                                 $result = @imagejpeg($image_dst, null, $this->jpeg_quality);
