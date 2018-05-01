@@ -3140,8 +3140,8 @@ class upload {
             if ($this->file_overwrite) $this->file_auto_rename = false;
 
             if ($this->image_convert && $this->file_is_image) { // if we convert as an image
-                if ($this->file_src_name_ext) $this->file_dst_name_ext  = $this->image_convert;
-                $this->log .= '- new file name ext : ' . $this->image_convert . '<br />';
+                $this->file_dst_name_ext  = $this->image_convert;
+                $this->log .= '- new file name ext : ' . $this->file_dst_name_ext . '<br />';
             }
             if (!is_null($this->file_new_name_body)) { // rename file body
                 $this->file_dst_name_body = $this->file_new_name_body;
