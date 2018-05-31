@@ -2738,7 +2738,8 @@ class upload {
         $filename = htmlentities($filename, ENT_QUOTES, "utf-8");
         $filename = preg_replace("/(&)([a-z])([a-z]+;)/i", '$2', $filename);
         // clean up, and remove repetitions
-        $filename = preg_replace(array('/ +/', '/_+/', '/-+/'), '-', $filename);
+        $filename = preg_replace('/_+/', '_', $filename);
+        $filename = preg_replace(array('/ +/', '/-+/'), '-', $filename);
         $filename = preg_replace(array('/-*\.-*/', '/\.{2,}/'), '.', $filename);
         // cut to 255 characters
         $length = 255 - strlen($this->file_dst_name_ext) + 1;
