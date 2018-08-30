@@ -40,15 +40,15 @@
 
     $translation = array();
     $translation = array();
-    $translation['file_error']                  = 'שגיעה בקובץ. נסה שנית';
+    $translation['file_error']                  = 'שגיאה בקובץ. נסה שנית';
     $translation['local_file_missing']          = 'הקובץ אינו קיים';
     $translation['local_file_not_readable']     = 'לא ניתן לקרוא את הקובץ';
-    $translation['uploaded_too_big_ini']        = 'שגיעה בהעלאת הקובץ. הקובץ חורג מהמקסימות המותר ב php.ini';
-    $translation['uploaded_too_big_html']       = 'שגיעה בהעלאת הקובץ. הקובץ חורג מהמקסימום המותר בהגדרות הטופס';
-    $translation['uploaded_partial']            = 'שגיעה בהעלאת קובץ. הקובץ נשמר חלקית בלבד על השרת';
-    $translation['uploaded_missing']            = 'שגיעה בהעלאת קובץ. הקובץ לא נשמר';
-    $translation['uploaded_unknown']            = 'שגיעה לא ידועה בהעלאת הקובץ';
-    $translation['try_again']                   = 'שגיעה בהעלאת הקובץ. נסה שנית';
+    $translation['uploaded_too_big_ini']        = 'שגיאה בהעלאת הקובץ. הקובץ חורג מהמקסימות המותר ב php.ini';
+    $translation['uploaded_too_big_html']       = 'שגיאה בהעלאת הקובץ. הקובץ חורג מהמקסימום המותר בהגדרות הטופס';
+    $translation['uploaded_partial']            = 'שגיאה בהעלאת קובץ. הקובץ נשמר חלקית בלבד על השרת';
+    $translation['uploaded_missing']            = 'שגיאה בהעלאת קובץ. הקובץ לא נשמר';
+    $translation['uploaded_unknown']            = 'שגיאה לא ידועה בהעלאת הקובץ';
+    $translation['try_again']                   = 'שגיאה בהעלאת הקובץ. נסה שנית';
     $translation['file_too_big']                = 'הקובץ כבד מדי';
     $translation['no_mime']                     = 'לא ניתן לזהות את סוג הקובץ';
     $translation['incorrect_file']              = 'סוג הקובץ שגוי';
@@ -80,7 +80,7 @@
     $translation['watermark_invalid']           = 'סוג קובץ לא מזוהה. לא ניתן לקרוא את הווטרמרק';
     $translation['file_create']                 = 'לא ניתן ליצור את  %s ';
     $translation['no_conversion_type']          = 'לא הוגדר סוג קובץ להמרה';
-    $translation['copy_failed']                 = 'שגיעה בהעתקת הקובץ לשרת';
-    $translation['reading_failed']              = 'שגיעה בקריאת הקובץ';
+    $translation['copy_failed']                 = 'שגיאה בהעתקת הקובץ לשרת';
+    $translation['reading_failed']              = 'שגיאה בקריאת הקובץ';
         
 ?>
