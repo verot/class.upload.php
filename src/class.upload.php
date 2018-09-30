@@ -451,7 +451,7 @@ class upload {
      * Set this variable to the default chmod you want the class to use
      * when creating directories, or attempting to write in a directory
      *
-     * Default value is 0777 (without quotes)
+     * Default value is 0755 (without quotes)
      *
      * @access public
      * @var bool
@@ -1716,7 +1716,7 @@ class upload {
         $this->file_auto_rename         = true;     // auto-rename if the file already exists
         $this->dir_auto_create          = true;     // auto-creates directory if missing
         $this->dir_auto_chmod           = true;     // auto-chmod directory if not writeable
-        $this->dir_chmod                = 0777;     // default chmod to use
+        $this->dir_chmod                = 0755;     // default chmod to use
 
         $this->no_script                = true;     // turns scripts into test files
         $this->mime_check               = true;     // checks the mime type against the allowed list
@@ -2651,7 +2651,7 @@ class upload {
      * @param  integer $mode Optional permissions
      * @return boolean Success
      */
-    function rmkdir($path, $mode = 0777) {
+    function rmkdir($path, $mode = 0755) {
         return is_dir($path) || ( $this->rmkdir(dirname($path), $mode) && $this->_mkdir($path, $mode) );
     }
 
@@ -2663,7 +2663,7 @@ class upload {
      * @param  integer $mode Optional permissions
      * @return boolean Success
      */
-    function _mkdir($path, $mode = 0777) {
+    function _mkdir($path, $mode = 0755) {
         $old = umask(0);
         $res = @mkdir($path, $mode);
         umask($old);
