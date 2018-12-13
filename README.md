@@ -138,7 +138,7 @@ Simply call `process()` without an argument (or with null as first argument):
 ```php
 $handle = new upload($_FILES['image_field']);
 header('Content-type: ' . $handle->file_src_mime);
-echo $handle->Process();
+echo $handle->process();
 die();
 ```
 
@@ -148,7 +148,7 @@ Or if you want to force the download of the file:
 $handle = new upload($_FILES['image_field']);
 header('Content-type: ' . $handle->file_src_mime);
 header("Content-Disposition: attachment; filename=".rawurlencode($handle->file_src_name).";");
-echo $handle->Process();
+echo $handle->process();
 die();
 ```
 
