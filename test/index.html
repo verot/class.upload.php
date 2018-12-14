@@ -15,7 +15,7 @@
           box-sizing: border-box;
           margin-bottom: 20px;
           padding: 15px;
-          width:300px;
+          width: 48%;
         }
         p.result {
           margin: 0px;
@@ -116,7 +116,7 @@
     <fieldset>
         <legend>Multiple upload flexible</legend>
         <p>Pick up some files to upload, and press "upload" </p>
-        <form name="form3" enctype="multipart/form-data" method="post" action="upload.php">
+        <form name="form4" enctype="multipart/form-data" method="post" action="upload.php">
             <p><input type="file" name="my_field[]" value="" multiple="multiple"/></p>
             <p class="button"><input type="hidden" name="action" value="multiple" />
             <input type="submit" name="Submit" value="upload" /></p>
@@ -127,7 +127,7 @@
     <fieldset>
         <legend>Image local manipulation</legend>
         <p>Enter a local file name (absolute or relative) for a small image, and press "process" </p>
-        <form name="form4" enctype="multipart/form-data" method="post" action="upload.php" />
+        <form name="form5" enctype="multipart/form-data" method="post" action="upload.php" />
             <p><input type="text" size="32" name="my_field" value="test.png" /></p>
             <p class="button"><input type="hidden" name="action" value="local" />
             <input type="submit" name="Submit" value="process" /></p>

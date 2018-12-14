@@ -9,6 +9,8 @@ include('../src/class.upload.php');
 $dir_dest = (isset($_GET['dir']) ? $_GET['dir'] : 'tmp');
 $dir_pics = (isset($_GET['pics']) ? $_GET['pics'] : $dir_dest);
 
+$log = '';
+
 ?>
 
 
@@ -109,6 +111,8 @@ if ($action == 'simple') {
         echo '</p>';
     }
 
+    $log .= $handle->log . '<br />';
+
 
 } else if ($action == 'base64') {
 
@@ -149,6 +153,8 @@ if ($action == 'simple') {
         echo '  Error: ' . $handle->error . '';
         echo '</p>';
     }
+
+    $log .= $handle->log . '<br />';
 
 } else if ($action == 'image') {
 
@@ -231,6 +237,7 @@ if ($action == 'simple') {
         echo '</p>';
     }
 
+    $log .= $handle->log . '<br />';
 
 } else if ($action == 'xhr') {
 
@@ -288,6 +295,7 @@ if ($action == 'simple') {
         echo '</p>';
     }
 
+    $log .= $handle->log . '<br />';
 
 } else if ($action == 'multiple') {
 
@@ -342,6 +350,8 @@ if ($action == 'simple') {
             echo '  Error: ' . $handle->error . '';
             echo '</p>';
         }
+
+        $log .= $handle->log . '<br />';
     }
 
 } else if ($action == 'local' || isset($_GET['file'])) {
@@ -951,15 +961,14 @@ if ($action == 'simple') {
         echo '<b>local file error</b><br />';
         echo 'Error: ' . $handle->error . '';
     }
+
+    $log .= $handle->log . '<br />';
 }
 
 echo '<p class="result"><a href="index.html">do another test</a></p>';
 
-if (isset($handle)) {
-    echo '<pre>';
-    echo($handle->log);
-    echo '</pre>';
-}
+if ($log) echo '<pre>' . $log . '</pre>';
+
 ?>
 </body>
 
