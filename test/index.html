@@ -5,23 +5,22 @@
     <title>class.upload.php test forms</title>
     <meta http-equiv="Content-Type" content="Type=text/html; charset=utf-8">
     <style>
+        #examples{
+          display:flex;
+          flex-direction:row;
+          flex-wrap:wrap;
+          align-items:stretch;
+        }
+        fieldset {
+          box-sizing: border-box;
+          margin-bottom: 20px;
+          padding: 15px;
+          width:300px;
+        }
         p.result {
           margin: 0px;
           padding: 0px;
         }
-        fieldset {
-          width: 45%;
-          margin: 15px 0px 25px 0px;
-          padding: 15px;
-        }     
-        fieldset.left {
-          float: left;
-          clear: left;
-        }     
-        fieldset.right {
-          float: right;
-          clear: right;
-        }     
         legend {
           font-weight: bold;
         }
@@ -51,14 +50,13 @@
           font-style: italic;
         }
     </style>
-
 </head>
-
 <body>
 
-    <h1>class.upload.php test forms</h1>
+  <h1>class.upload.php test forms</h1>
 
-    <fieldset class="left">
+  <div id="examples">
+    <fieldset>
         <legend>Simple upload</legend>
         <p>Pick up a file to upload, and press "upload" </p>
         <form name="form1" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -68,7 +66,7 @@
         </form>
     </fieldset>
 
-    <fieldset class="right">
+    <fieldset>
         <legend>Image upload</legend>
         <p>Pick up an image to upload, and press "upload" </p>
         <form name="form2" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -78,7 +76,7 @@
         </form>
     </fieldset>
 
-    <fieldset class="left">
+    <fieldset>
         <legend>XMLHttpRequest upload</legend>
         <p>Pick up one file to upload, and press "upload" </p>
         <form name="form5" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -90,7 +88,7 @@
         <div id="xhr_result"></div>
     </fieldset>
 
-    <fieldset class="right">
+    <fieldset>
         <legend>HTML5 File Drag &amp; Drop API</legend>
         <p>Drag and drop one file to upload, and press "upload" </p>
         <form name="form5" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -103,19 +101,30 @@
         <div id="dnd_result"></div>
     </fieldset>
 
-    <fieldset class="left">
+    <fieldset>
         <legend>Multiple upload</legend>
         <p>Pick up some files to upload, and press "upload" </p>
         <form name="form3" enctype="multipart/form-data" method="post" action="upload.php">
-            <p><input type="file" size="32" name="my_field[]" value="" /></p>
-            <p><input type="file" size="32" name="my_field[]" value="" /></p>
-            <p><input type="file" size="32" name="my_field[]" value="" /></p>
+            <p><input type="file" name="my_field[]" value="" /></p>
+            <p><input type="file" name="my_field[]" value="" /></p>
+            <p><input type="file" name="my_field[]" value="" /></p>
             <p class="button"><input type="hidden" name="action" value="multiple" />
             <input type="submit" name="Submit" value="upload" /></p>
         </form>
     </fieldset>
 
-    <fieldset class="right">
+    <fieldset>
+        <legend>Multiple upload flexible</legend>
+        <p>Pick up some files to upload, and press "upload" </p>
+        <form name="form3" enctype="multipart/form-data" method="post" action="upload.php">
+            <p><input type="file" name="my_field[]" value="" multiple="multiple"/></p>
+            <p class="button"><input type="hidden" name="action" value="multiple" />
+            <input type="submit" name="Submit" value="upload" /></p>
+        </form>
+        <p>Note: Number of processed files per request on the server is also limited by PHP ini setting <strong>max_file_uploads</strong>.</p>
+    </fieldset>
+
+    <fieldset>
         <legend>Image local manipulation</legend>
         <p>Enter a local file name (absolute or relative) for a small image, and press "process" </p>
         <form name="form4" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -125,7 +134,7 @@
         </form>
     </fieldset>
 
-    <fieldset class="left">
+    <fieldset>
         <legend>Base64-encoded image data</legend>
         <p>Copy here base64-encoded file data, and press "process" </p>
         <form name="form6" enctype="multipart/form-data" method="post" action="upload.php" />
@@ -134,7 +143,7 @@
             <input type="submit" name="Submit" value="process" /></p>
         </form>
     </fieldset>
-
+  </div>
     <script type="text/javascript">
 
     window.onload = function () {
