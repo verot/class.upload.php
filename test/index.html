@@ -30,6 +30,9 @@
         .button input {
           font-weight: bold;
         }
+        pre {
+          white-space: pre-wrap;
+        }
 
         #dnd_drag {
           display: none;
@@ -43,6 +46,12 @@
         }
         #dnd_drag.hover {
           border: 2px dashed #000;
+        }
+
+        #xhr_progress, #dnd_progress {  
+          background-color: #999;
+          padding: .1em 0;
+          width: 0%;
         }
 
         #xhr_status, #dnd_status {
@@ -84,6 +93,7 @@
             <div id="xhr_status"></div>
             <p class="button"><input type="hidden" name="action" value="xhr" />
             <input type="submit" name="Submit" value="upload" id="xhr_upload"/></p>
+            <div id="xhr_progress"></div>
         </form>
         <div id="xhr_result"></div>
     </fieldset>
@@ -97,6 +107,7 @@
             <div id="dnd_status"></div>
             <p class="button"><input type="hidden" name="action" value="xhr" />
             <input type="submit" name="Submit" value="upload" id="dnd_upload"/></p>
+            <div id="dnd_progress"></div>
         </form>
         <div id="dnd_result"></div>
     </fieldset>
@@ -148,26 +159,39 @@
 
     window.onload = function () {
 
-      function xhr_send(f, e) {
-        if (f) {
-          xhr.onreadystatechange = function(){
+      function xhr_send(file, status, progress) {
+        if (file) {
+          xhr.addEventListener('readystatechange', function(event) {
             if(xhr.readyState == 4){
-              document.getElementById(e).innerHTML = xhr.responseText;
+              document.getElementById(status).innerHTML = xhr.responseText;
             }
-          }
+          }, false);
+
+	        xhr.upload.addEventListener("progress", function (event) {
+            if (event.lengthComputable) {
+              self.progress = event.loaded / event.total;
+            } else if (this.explicitTotal) {
+              self.progress = Math.min(1, event.loaded / self.explicitTotal);
+            } else {
+              self.progress = 0;
+            }
+            document.getElementById(progress).innerHTML = ' ' + Math.floor(self.progress*1000)/10 + '%';
+            document.getElementById(progress).style.width=  self.progress*100 + '%';
+          }, false);
+
           xhr.open("POST", "upload.php?action=xhr");
           xhr.setRequestHeader("Cache-Control", "no-cache");
           xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-          xhr.setRequestHeader("X-File-Name", f.name);
-          xhr.send(f);
+          xhr.setRequestHeader("X-File-Name", file.name);
+          xhr.send(file);
         }
       }
 
-      function xhr_parse(f, e) {
-        if (f) {
-          document.getElementById(e).innerHTML = "File selected : " + f.name + "(" + f.type + ", " + f.size + ")";
+      function xhr_parse(file, status) {
+        if (file) {
+          document.getElementById(status).innerHTML = "File selected : " + file.name + "(" + file.type + ", " + file.size + ")";
         } else {
-          document.getElementById(e).innerHTML = "No file selected!";
+          document.getElementById(status).innerHTML = "No file selected!";
         }
       }
 
@@ -189,7 +213,7 @@
         }
         document.getElementById("xhr_upload").onclick = function (e) {
           e.preventDefault();
-          xhr_send(xhr_file, "xhr_result");
+          xhr_send(xhr_file, "xhr_result", "xhr_progress");
         }
 
         // drag and drop example
@@ -214,7 +238,7 @@
         }
         document.getElementById("dnd_upload").onclick = function (e) {
           e.preventDefault();
-          xhr_send(dnd_file, "dnd_result");
+          xhr_send(dnd_file, "dnd_result", "dnd_progress");
         }
 
       }
