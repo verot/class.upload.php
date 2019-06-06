@@ -14,7 +14,7 @@ Commercial use: [http://www.verot.net/php_class_upload_license.htm](http://www.v
 
 This class manages file uploads for you. In short, it manages the uploaded file, and allows you to do whatever you want with the file, especially if it is an image, and as many times as you want.
 
-It is the ideal class to quickly integrate file upload in your site. If the file is an image, you can convert, resize, crop it in many ways. You can also apply filters, add borders, text, watermarks, etc... That's all you need for a gallery script for instance. Supported formats are PNG, JPG, GIF and BMP.
+It is the ideal class to quickly integrate file upload in your site. If the file is an image, you can convert, resize, crop it in many ways. You can also apply filters, add borders, text, watermarks, etc... That's all you need for a gallery script for instance. Supported formats are PNG, JPG, GIF, WEBP and BMP.
 
 You can also use the class to work on local files, which is especially useful to use the image manipulation features. The class also supports Flash uploaders and XMLHttpRequest.
 
@@ -243,7 +243,7 @@ $handle->forbidden = array('application/*');
 ### Image handling
 
 
-* **image_convert** if set, image will be converted (possible values : ''|'png'|'jpeg'|'gif'|'bmp'; default: '')
+* **image_convert** if set, image will be converted (possible values : ''|'png'|'webp'|'jpeg'|'gif'|'bmp'; default: '')
 ```php
 $handle->image_convert = 'jpg';
 ```
@@ -258,6 +258,10 @@ $handle->image_default_color = '#FF00FF';
 * **png_compression** sets the compression level for PNG images, between 1 (fast but large files) and 9 (slow but smaller files) (default: null (Zlib default))
 ```php
 $handle->png_compression = 9;
+```
+* **webp_quality** sets the compression quality for WEBP images (default: 85)
+```php
+$handle->webp_quality = 50;
 ```
 * **jpeg_quality** sets the compression quality for JPEG images (default: 85)
 ```php
@@ -570,7 +574,7 @@ $handle->image_frame_opacity = 50;
 
 ### Image watermark
 
-* **image_watermark** adds a watermark on the image, value is a local filename. accepted files are GIF, JPG, BMP, PNG and PNG alpha (default: null)
+* **image_watermark** adds a watermark on the image, value is a local filename. accepted files are GIF, JPG, BMP, WEBP, PNG and PNG alpha (default: null)
 ```php
 $handle->image_watermark = 'watermark.png';
 ```
@@ -633,7 +637,7 @@ If the file is a supported image type (and _open_basedir_ restrictions allow it)
 * **image_src_x** Source file width in pixels
 * **image_src_y** Source file height in pixels
 * **image_src_pixels** Source file number of pixels
-* **image_src_type** Source file type (png, jpg, gif or bmp)
+* **image_src_type** Source file type (png, webp, jpg, gif or bmp)
 * **image_src_bits** Source file color depth
 
 
@@ -647,7 +651,7 @@ If the file is a supported image type (and _open_basedir_ restrictions allow it)
 
 If the file is a supported image type
 
-* **image_dst_type** Destination file type (png, jpg, gif or bmp)
+* **image_dst_type** Destination file type (png, webp, jpg, gif or bmp)
 * **image_dst_x** Destination file width
 * **image_dst_y** Destination file height
 
@@ -666,6 +670,11 @@ The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
 **master**
 
 * better file name sanitization
+* improve PSR2 compatibility
+* add WebP support
+* updated translations
+* replace 0777 permissions with 0755 (safer)
+* bug fixes
 
 
 **v 0.34** 11/03/2018
