@@ -1924,6 +1924,7 @@ class upload {
             'text/rtf',
             'text/richtext',
             'text/xml',
+            'text/html',
             'video/*',
             'text/csv'
         );
