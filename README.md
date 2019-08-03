@@ -665,6 +665,7 @@ If the file is a supported image type
 
 Most of the image operations require GD. GD2 is greatly recommended
 
-The class requires PHP 4.3+, and is compatible with PHP 5 and PHP 7
+Version 1.x supports PHP 4, 5 and 7, but is not namespaced. Use it if you need support for PHP <5.3
 
+Version 2.x supports PHP 5.3+ and PHP7.
 
