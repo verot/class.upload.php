@@ -2050,7 +2050,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '0.35dev';
+        $this->version            = '02/08/2019';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
