@@ -1,4 +1,5 @@
 <?php
+namespace Verot\Upload;
 
 error_reporting(E_ALL);
 
