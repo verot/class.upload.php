@@ -30,9 +30,15 @@ Edit your composer.json file to include the following:
 ```
     {
        "require": {
-           "verot/class.upload.php": "dev-master"
+           "verot/class.upload.php": "*"
        }
     }
+```
+
+Or install it directly:
+
+```
+    composer require verot/class.upload.php
 ```
 
 ## Demo and examples
