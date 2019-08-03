@@ -18,9 +18,7 @@ It is the ideal class to quickly integrate file upload in your site. If the file
 
 You can also use the class to work on local files, which is especially useful to use the image manipulation features. The class also supports Flash uploaders and XMLHttpRequest.
 
-The class works with PHP 4, 5 and 7, and its error messages can be localized at will.
-
-
+The class works with PHP 5.3+ and PHP 7 (use version 1.x for PHP 4 support), and its error messages can be localized at will.
 
 
 ## Install via composer
