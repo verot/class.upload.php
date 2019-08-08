@@ -56,7 +56,7 @@ Create a simple HTML file, with a form such as:
 ```
 Create a file called upload.php (into which you have first loaded the class):
 ```php
-$handle = new upload($_FILES['image_field']);
+$handle = new Upload($_FILES['image_field']);
 if ($handle->uploaded) {
   $handle->file_new_name_body   = 'image_resized';
   $handle->image_resize         = true;
@@ -94,7 +94,7 @@ Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if
 Instantiate the class with the local filename, as following:
 
 ```php
-$handle = new upload('/home/user/myfile.jpg');
+$handle = new Upload('/home/user/myfile.jpg');
 ```
 
 
@@ -103,13 +103,13 @@ $handle = new upload('/home/user/myfile.jpg');
 Instantiate the class with the special _php:_ keyword, as following:
 
 ```php
-$handle = new upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
+$handle = new Upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
 ```
 
 Prefixing the argument with _php:_ tells the class to retrieve the uploaded data in _php://input_, and the rest is the stream's filename, which is generally in `$_SERVER['HTTP_X_FILE_NAME']`. But you can use any other name you see fit:
 
 ```php
-$handle = new upload('php:mycustomname.ext');
+$handle = new Upload('php:mycustomname.ext');
 ```
 
 ### How to process raw file data?
@@ -117,13 +117,13 @@ $handle = new upload('php:mycustomname.ext');
 Instantiate the class with the special _data:_ keyword, as following:
 
 ```php
-$handle = new upload('data:'.$file_contents);
+$handle = new Upload('data:'.$file_contents);
 ```
 
 If your data is base64-encoded, the class provides a simple _base64:_ keyword, which will decode your data prior to using it:
 
 ```php
-$handle = new upload('base64:'.$base64_file_contents);
+$handle = new Upload('base64:'.$base64_file_contents);
 ```
 
 ### How to set the language?
@@ -131,8 +131,8 @@ $handle = new upload('base64:'.$base64_file_contents);
 Instantiate the class with a second argument being the language code:
 
 ```php
-$handle = new upload($_FILES['image_field'], 'fr_FR');
-$handle = new upload('/home/user/myfile.jpg', 'fr_FR');
+$handle = new Upload($_FILES['image_field'], 'fr_FR');
+$handle = new Upload('/home/user/myfile.jpg', 'fr_FR');
 ```
 
 ### How to output the resulting file or picture directly to the browser?
@@ -140,7 +140,7 @@ $handle = new upload('/home/user/myfile.jpg', 'fr_FR');
 Simply call `process()` without an argument (or with null as first argument):
 
 ```php
-$handle = new upload($_FILES['image_field']);
+$handle = new Upload($_FILES['image_field']);
 header('Content-type: ' . $handle->file_src_mime);
 echo $handle->process();
 die();
@@ -149,7 +149,7 @@ die();
 Or if you want to force the download of the file:
 
 ```php
-$handle = new upload($_FILES['image_field']);
+$handle = new Upload($_FILES['image_field']);
 header('Content-type: ' . $handle->file_src_mime);
 header("Content-Disposition: attachment; filename=".rawurlencode($handle->file_src_name).";");
 echo $handle->process();
@@ -667,5 +667,5 @@ Most of the image operations require GD. GD2 is greatly recommended
 
 Version 1.x supports PHP 4, 5 and 7, but is not namespaced. Use it if you need support for PHP <5.3
 
-Version 2.x supports PHP 5.3+ and PHP7.
+Version 2.x supports PHP 5.3+ and PHP 7.
 

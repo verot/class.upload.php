@@ -72,7 +72,7 @@ if ($action == 'simple') {
     // we create an instance of the class, giving as argument the PHP object
     // corresponding to the file field from the form
     // All the uploads are accessible from the PHP object $_FILES
-    $handle = new upload($_FILES['my_field']);
+    $handle = new Upload($_FILES['my_field']);
 
     // then we check if the file has been uploaded properly
     // in its *temporary* location in the server (often, it is /tmp)
@@ -120,7 +120,7 @@ if ($action == 'simple') {
     // ---------- BASE64 FILE ----------
 
     // we create an instance of the class, giving as argument the data string
-    $handle = new upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
+    $handle = new Upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
 
     // check if a temporary file has been created with the file data
     if ($handle->uploaded) {
@@ -164,7 +164,7 @@ if ($action == 'simple') {
     // we create an instance of the class, giving as argument the PHP object
     // corresponding to the file field from the form
     // All the uploads are accessible from the PHP object $_FILES
-    $handle = new upload($_FILES['my_field']);
+    $handle = new Upload($_FILES['my_field']);
 
     // then we check if the file has been uploaded properly
     // in its *temporary* location in the server (often, it is /tmp)
@@ -249,13 +249,13 @@ if ($action == 'simple') {
 
         // we create an instance of the class, feeding in the name of the file
         // sent via a XMLHttpRequest request, prefixed with 'php:'
-        $handle = new upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
+        $handle = new Upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
 
     } else {
         // we create an instance of the class, giving as argument the PHP object
         // corresponding to the file field from the form
         // This is the fallback, using the standard way
-        $handle = new upload($_FILES['my_field']);
+        $handle = new Upload($_FILES['my_field']);
     }
 
     // then we check if the file has been uploaded properly
@@ -316,7 +316,7 @@ if ($action == 'simple') {
     foreach ($files as $file) {
 
         // we instanciate the class for each element of $file
-        $handle = new upload($file);
+        $handle = new Upload($file);
 
         // then we check if the file has been uploaded properly
         // in its *temporary* location in the server (often, it is /tmp)
@@ -364,7 +364,7 @@ if ($action == 'simple') {
     ini_set("max_execution_time",0);
 
     // we don't upload, we just send a local filename (image)
-    $handle = new upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
+    $handle = new Upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
 
     // then we check if the file has been "uploaded" properly
     // in our case, it means if the file is present on the local file system
