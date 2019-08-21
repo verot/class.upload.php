@@ -1896,6 +1896,7 @@ class upload {
             'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
             'application/vocaltec-media-file',
             'application/wordperfect',
+            'application/haansoftxlsx',
             'application/x-bittorrent',
             'application/x-bzip',
             'application/x-bzip2',
