@@ -56,7 +56,7 @@ Create a simple HTML file, with a form such as:
 ```
 Create a file called upload.php (into which you have first loaded the class):
 ```php
-$handle = new Upload($_FILES['image_field']);
+$handle = new \verot\Upload\Upload($_FILES['image_field']);
 if ($handle->uploaded) {
   $handle->file_new_name_body   = 'image_resized';
   $handle->image_resize         = true;
@@ -87,7 +87,19 @@ If you don't set any processing parameters and call `process()` just after insta
 
 Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if you want your form to upload the file.
 
+### Namespacing
 
+The class is now namespaced in the `Verot/Upload` namespace. If you have the error *Fatal error:  Class 'Upload' not found*, then make sure your file belongs to the namespace, or instantiate the class with its fully qualified name:
+
+```php
+namespace Verot\Upload;
+$handle = new Upload($_FILES['image_field']);
+```
+or
+
+```php
+$handle = new \Verot\Upload\Upload($_FILES['image_field']);
+```
 
 ### How to process local files?
 
