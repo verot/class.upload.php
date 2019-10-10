@@ -2212,6 +2212,7 @@ class upload {
                 $this->uploaded = false;
                 $this->error = $this->translate('file_error');
             } else {
+		$file = (string) $file;
                 if (substr($file, 0, 4) == 'php:' || substr($file, 0, 5) == 'data:' || substr($file, 0, 7) == 'base64:') {
                     $data = null;
 
