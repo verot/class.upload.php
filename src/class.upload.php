@@ -2316,7 +2316,7 @@ class Upload {
             // this is an element from $_FILE, i.e. an uploaded file
             $this->log .= '<b>source is an uploaded file</b><br />';
             if ($this->uploaded) {
-                $this->file_src_error         = trim($file['error']);
+                $this->file_src_error         = trim((int) $file['error']);
                 switch($this->file_src_error) {
                     case UPLOAD_ERR_OK:
                         // all is OK
@@ -2357,8 +2357,8 @@ class Upload {
             }
 
             if ($this->uploaded) {
-                $this->file_src_pathname   = $file['tmp_name'];
-                $this->file_src_name       = $file['name'];
+                $this->file_src_pathname   = (string) $file['tmp_name'];
+                $this->file_src_name       = (string) $file['name'];
                 if ($this->file_src_name == '') {
                     $this->uploaded = false;
                     $this->error = $this->translate('try_again');
@@ -2375,8 +2375,8 @@ class Upload {
                     $this->file_src_name_ext      = '';
                     $this->file_src_name_body     = $this->file_src_name;
                 }
-                $this->file_src_size = $file['size'];
-                $mime_from_browser = $file['type'];
+                $this->file_src_size = (int) $file['size'];
+                $mime_from_browser = (string) $file['type'];
             }
         }
 
