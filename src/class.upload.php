@@ -2795,7 +2795,7 @@ class upload {
      */
     function getsize($size) {
         if ($size === null) return null;
-        $last = is_string($size) ? strtolower($size{strlen($size)-1}) : null;
+        $last = is_string($size) ? strtolower(substr($size, -1)) : null;
         $size = (int) $size;
         switch($last) {
             case 'g':
