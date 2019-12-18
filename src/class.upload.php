@@ -1687,6 +1687,17 @@ class Upload {
     var $forbidden;
 
     /**
+     * Blacklisted file extensions
+     *
+     * List of blacklisted extensions, that are enforced if {@link no_script} is true
+     *
+     * @access public
+     * @var array
+     */
+    var $blacklist;
+
+
+    /**
      * Array of translated error messages
      *
      * By default, the language is english (en_GB)
@@ -2015,6 +2026,28 @@ class Upload {
             'onetmp' => 'application/onenote',
             'onepkg' => 'application/onenote',
             'csv' => 'text/csv',
+        );
+
+        $this->blacklist = array(
+            'php',
+            'php7',
+            'php6',
+            'php5',
+            'php4',
+            'php3',
+            'phtml',
+            'pht',
+            'phpt',
+            'phtm',
+            'phps',
+            'inc',
+            'pl',
+            'py',
+            'cgi',
+            'asp',
+            'js',
+            'sh',
+            'phar',
         );
 
     }
@@ -3065,7 +3098,7 @@ class Upload {
                 }
                 // if the file is text based, or has a dangerous extension, we rename it as .txt
                 if ((((substr($this->file_src_mime, 0, 5) == 'text/' && $this->file_src_mime != 'text/rtf') || strpos($this->file_src_mime, 'javascript') !== false)  && (substr($file_src_name, -4) != '.txt'))
-                    || preg_match('/\.(php|php7|php6|php5|php4|php3|phtml|pht|pl|py|cgi|asp|js|phar)$/i', $this->file_src_name)
+                    || preg_match('/\.(' . implode('|', $this->blacklist) . ')$/i', $this->file_src_name)
                     || $this->file_force_extension && empty($file_src_name_ext)) {
                     $this->file_src_mime = 'text/plain';
                     if ($this->file_src_name_ext) $file_src_name_body = $file_src_name_body . '.' . $this->file_src_name_ext;
