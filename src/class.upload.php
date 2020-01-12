@@ -27,6 +27,8 @@
 
 namespace Verot\Upload;
 
+if (!defined('IMG_WEBP')) define('IMG_WEBP', 32);
+
 /**
  * Class upload
  *
