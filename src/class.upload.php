@@ -1940,7 +1940,13 @@ class Upload {
             'text/richtext',
             'text/xml',
             'video/*',
-            'text/csv'
+            'text/csv',
+            'text/x-c',
+            'text/x-csv',
+            'text/comma-separated-values',
+            'text/x-comma-separated-values',
+            'application/csv',
+            'application/x-csv',
         );
 
         $this->mime_types = array(
