@@ -56,7 +56,7 @@ Create a simple HTML file, with a form such as:
 ```
 Create a file called upload.php (into which you have first loaded the class):
 ```php
-$handle = new \verot\Upload\Upload($_FILES['image_field']);
+$handle = new \Verot\Upload\Upload($_FILES['image_field']);
 if ($handle->uploaded) {
   $handle->file_new_name_body   = 'image_resized';
   $handle->image_resize         = true;
