@@ -2942,9 +2942,23 @@ class Upload {
      * @return resource Destination image
      */
     function imagetransfer($src_im, $dst_im) {
-        if (is_resource($dst_im)) imagedestroy($dst_im);
+        $this->imageunset($dst_im);
         $dst_im = & $src_im;
         return $dst_im;
+    }
+
+    /**
+     * Destroy GD ressource
+     *
+     * @access private
+     * @param  resource $im Image
+     */
+    function imageunset($im) {
+        if (is_resource($im)) {
+            imagedestroy($im);
+        } else if (is_object($im) && $im instanceOf \GdImage) {
+            unset($im);
+        }
     }
 
     /**
@@ -3979,7 +3993,7 @@ class Upload {
                             imagecopyresized($filter, $image_dst, 0, 0, 0, 0, round($this->image_dst_x / $this->image_pixelate), round($this->image_dst_y / $this->image_pixelate), $this->image_dst_x, $this->image_dst_y);
                             imagecopyresized($image_dst, $filter, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, round($this->image_dst_x / $this->image_pixelate), round($this->image_dst_y / $this->image_pixelate));
                         }
-                        imagedestroy($filter);
+                        $this->imageunset($filter);
                     }
 
                     // unsharp mask
@@ -4043,8 +4057,8 @@ class Upload {
                                     }
                                 }
                             }
-                            imagedestroy($canvas);
-                            imagedestroy($blur);
+                            $this->imageunset($canvas);
+                            $this->imageunset($blur);
                         }
                     }
 
@@ -4056,7 +4070,7 @@ class Upload {
                         $color = imagecolorallocate($filter, $red, $green, $blue);
                         imagefilledrectangle($filter, 0, 0, $this->image_dst_x, $this->image_dst_y, $color);
                         $this->imagecopymergealpha($image_dst, $filter, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y, $this->image_overlay_opacity);
-                        imagedestroy($filter);
+                        $this->imageunset($filter);
                     }
 
                     // add brightness, contrast and tint, turns to greyscale and inverts colors
@@ -4590,7 +4604,7 @@ class Upload {
                                 $background_color = imagecolorallocate($filter, $red, $green, $blue);
                                 imagefilledrectangle($filter, 0, 0, $text_width, $text_height, $background_color);
                                 $this->imagecopymergealpha($image_dst, $filter, $text_x, $text_y, 0, 0, $text_width, $text_height, $this->image_text_background_opacity);
-                                imagedestroy($filter);
+                                $this->imageunset($filter);
                             } else {
                                 $background_color = imagecolorallocate($image_dst ,$red, $green, $blue);
                                 imagefilledrectangle($image_dst, $text_x, $text_y, $text_x + $text_width, $text_y + $text_height, $background_color);
@@ -4639,7 +4653,7 @@ class Upload {
                                              $text);
                             }
                             $this->imagecopymergealpha($image_dst, $filter, $text_x, $text_y, 0, 0, $t_width, $t_height, $this->image_text_opacity);
-                            imagedestroy($filter);
+                            $this->imageunset($filter);
 
                         } else {
                             $text_color = imagecolorallocate($image_dst ,$red, $green, $blue);
@@ -4977,8 +4991,8 @@ class Upload {
                             $this->error = $this->translate('no_conversion_type');
                     }
                     if ($this->processed) {
-                        if (is_resource($image_src)) imagedestroy($image_src);
-                        if (is_resource($image_dst)) imagedestroy($image_dst);
+                        $this->imageunset($image_src);
+                        $this->imageunset($image_dst);
                         $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;image objects destroyed<br />';
                     }
                 }
@@ -5130,7 +5144,7 @@ class Upload {
         if (!imageistruecolor($im)) {
             $tmp = imagecreatetruecolor($w, $h);
             imagecopy($tmp, $im, 0, 0, 0, 0, $w, $h);
-            imagedestroy($im);
+            $this->imageunset($im);
             $im = & $tmp;
         }
 
