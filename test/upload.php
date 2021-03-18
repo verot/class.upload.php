@@ -249,7 +249,7 @@ if ($action == 'simple') {
 
         // we create an instance of the class, feeding in the name of the file
         // sent via a XMLHttpRequest request, prefixed with 'php:'
-        $handle = new Upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);
+        $handle = new Upload('php:'.rawurldecode($_SERVER['HTTP_X_FILE_NAME']));
 
     } else {
         // we create an instance of the class, giving as argument the PHP object
