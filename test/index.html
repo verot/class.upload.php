@@ -48,7 +48,7 @@
           border: 2px dashed #000;
         }
 
-        #xhr_progress, #dnd_progress {  
+        #xhr_progress, #dnd_progress {
           background-color: #999;
           padding: .1em 0;
           width: 0%;
@@ -167,7 +167,7 @@
             }
           }, false);
 
-	        xhr.upload.addEventListener("progress", function (event) {
+          xhr.upload.addEventListener("progress", function (event) {
             if (event.lengthComputable) {
               self.progress = event.loaded / event.total;
             } else if (this.explicitTotal) {
@@ -182,7 +182,7 @@
           xhr.open("POST", "upload.php?action=xhr");
           xhr.setRequestHeader("Cache-Control", "no-cache");
           xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-          xhr.setRequestHeader("X-File-Name", file.name);
+          xhr.setRequestHeader("X-File-Name", encodeURIComponent(file.name));
           xhr.send(file);
         }
       }
@@ -198,7 +198,7 @@
       function dnd_hover(e) {
         e.stopPropagation();
         e.preventDefault();
-        e.target.className = (e.type == "dragover" ? "hover" : "");  
+        e.target.className = (e.type == "dragover" ? "hover" : "");
       }
 
       var xhr = new XMLHttpRequest();
@@ -217,7 +217,7 @@
         }
 
         // drag and drop example
-        var dnd_file = null; 
+        var dnd_file = null;
         document.getElementById("dnd_drag").style.display = "block";
         document.getElementById("dnd_field").style.display = "none";
         document.getElementById("dnd_drag").ondragover = function (e) {
