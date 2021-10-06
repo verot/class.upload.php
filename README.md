@@ -679,5 +679,5 @@ Most of the image operations require GD. GD2 is greatly recommended
 
 Version 1.x supports PHP 4, 5 and 7, but is not namespaced. Use it if you need support for PHP <5.3
 
-Version 2.x supports PHP 5.3+ and PHP 7.
+Version 2.x supports PHP 5.3+, PHP 7 and PHP 8.
 
