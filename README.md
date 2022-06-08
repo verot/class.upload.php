@@ -664,6 +664,7 @@ If the file is a supported image type (and _open_basedir_ restrictions allow it)
 * **file_dst_name_ext** Destination file extension
 * **file_dst_name** Destination file name
 * **file_dst_pathname** Destination file complete path and name
+* **file_dst_mime** Destination file mime type
 
 If the file is a supported image type
 

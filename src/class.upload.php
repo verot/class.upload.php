@@ -152,6 +152,14 @@ class Upload {
     var $file_dst_pathname;
 
     /**
+     * Destination file MIME type
+     *
+     * @access public
+     * @var string
+     */
+    var $file_dst_mime;
+
+    /**
      * Source image width
      *
      * @access public
@@ -2109,6 +2117,7 @@ class Upload {
         $this->file_dst_name_body = '';
         $this->file_dst_name_ext  = '';
         $this->file_dst_pathname  = '';
+        $this->file_dst_mime      = '';
 
         $this->image_src_x        = null;
         $this->image_src_y        = null;
@@ -5022,6 +5031,9 @@ class Upload {
         }
 
         if ($this->processed) {
+            $this->file_dst_mime = isset($this->mime_types[$this->file_dst_name_ext]) !== false 
+                ? $this->mime_types[$this->file_dst_name_ext]
+                : $this->file_src_mime;
             $this->log .= '- <b>process OK</b><br />';
         } else {
             $this->log .= '- <b>error</b>: ' . $this->error . '<br />';
