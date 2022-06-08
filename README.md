@@ -254,6 +254,10 @@ $handle->allowed = array('application/pdf','application/msword', 'image/*');
 ```php
 $handle->forbidden = array('application/*');
 ```
+* **forbidden_extensions** array of forbidden extensions (or one string).  (default: check `init()`)
+```php
+$handle->forbidden_extensions = array('bat', 'exe', 'deb');
+```
 
 
 ### Image handling

@@ -1697,6 +1697,19 @@ class Upload {
     var $forbidden;
 
     /**
+     * Forbidden file extensions
+     *
+     * Default is a selection of safe extensions, but you might want to change it
+     * To only check for forbidden extensions, and allow everything else, set {@link allowed} to array('bat') with or without dot
+     *
+     * If there is only one extension forbidden, then it can be a string instead of an array
+     *
+     * @access public
+     * @var array OR string
+     */
+    var $forbidden_extensions;
+
+    /**
      * Blacklisted file extensions
      *
      * List of blacklisted extensions, that are enforced if {@link no_script} is true
@@ -1862,6 +1875,7 @@ class Upload {
         $this->image_frame_opacity      = 100;
 
         $this->forbidden = array();
+        $this->forbidden_extensions = array();
         $this->allowed = array(
             'application/arj',
             'application/excel',
@@ -1954,7 +1968,7 @@ class Upload {
             'text/comma-separated-values',
             'text/x-comma-separated-values',
             'application/csv',
-            'application/x-csv',
+            'application/x-csv'
         );
 
         $this->mime_types = array(
@@ -2135,6 +2149,7 @@ class Upload {
         $this->log                = '';
         $this->allowed            = array();
         $this->forbidden          = array();
+        $this->forbidden_extensions = array();
         $this->file_is_image      = false;
         $this->init();
         $info                     = null;
@@ -3163,6 +3178,22 @@ class Upload {
                         break;
                     }
                 }
+
+                // check wether the exyension is forbidden
+                if ($allowed) {
+                    $this->forbidden_extensions = !is_array($this->forbidden_extensions) 
+                        ? [$this->forbidden_extensions] 
+                        : $this->forbidden_extensions;
+
+                    foreach($this->forbidden_extensions as $v) {
+
+                        if (trim($v, '.') === $this->file_src_name_ext) {
+                            $allowed = false;
+                            break;
+                        }
+                    }
+                }
+
                 if (!$allowed) {
                     $this->processed = false;
                     $this->error = $this->translate('incorrect_file');
