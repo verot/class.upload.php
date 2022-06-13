@@ -2616,9 +2616,14 @@ class Upload {
             }
 
             // determine whether the file is an image
-            if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime) && array_key_exists($this->file_src_mime, $this->image_supported)) {
-                $this->file_is_image = true;
-                $this->image_src_type = $this->image_supported[$this->file_src_mime];
+            if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime)) {
+                if (array_key_exists($this->file_src_mime, $this->image_supported)) {
+                    $this->file_is_image = true;
+                    $this->image_src_type = $this->image_supported[$this->file_src_mime];
+                    $this->log .= '- file is an image, and its type is supported by GD<br />';
+                } else if (strpos($this->file_src_mime, 'image/') !== FALSE && sizeof($this->image_supported) == 0) {
+                    $this->log .= '- file may be an image, but its type is not supported; is GD installed ?<br />';
+                }
             }
 
             // if the file is an image, we gather some useful data
@@ -4538,10 +4543,9 @@ class Upload {
                                 $this->log .=  'error<br />';
                                 $this->image_text_font = 5;
                             }
-                        }
 
                         // if the font is a string with a TTF font path, we check if we can access the font file
-                        if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.ttf') {
+                        } else if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.ttf') {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;try to load font ' . $this->image_text_font . '... ';
                             if (strpos($this->image_text_font, '/') === false) $this->image_text_font = "./" . $this->image_text_font;
                             if (file_exists($this->image_text_font) && is_readable($this->image_text_font)) {
