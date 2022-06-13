@@ -242,15 +242,15 @@ $handle->file_max_size = '1024'; // 1KB
 ```php
 $handle->mime_check = true;
 ```
-* **no_script** sets if the class turns scripts into text files (default: true)
+* **no_script** sets if the class turns dangerous scripts into text files (default: true)
 ```php
 $handle->no_script = false;
 ```
-* **allowed** array of allowed mime-types (or one string). wildcard accepted, as in _image/*_ (default: check `init()`)
+* **allowed** array of allowed mime-types or file extensions (or one string). wildcard accepted, as in _image/*_ (default: check `init()`)
 ```php
 $handle->allowed = array('application/pdf','application/msword', 'image/*');
 ```
-* **forbidden** array of forbidden mime-types (or one string). wildcard accepted, as in _image/*_  (default: check `init()`)
+* **forbidden** array of forbidden mime-types or file extensions (or one string). wildcard accepted, as in _image/*_  (default: check `init()`)
 ```php
 $handle->forbidden = array('application/*');
 ```
