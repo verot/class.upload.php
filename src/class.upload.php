@@ -2615,9 +2615,14 @@ class upload {
             }
 
             // determine whether the file is an image
-            if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime) && array_key_exists($this->file_src_mime, $this->image_supported)) {
-                $this->file_is_image = true;
-                $this->image_src_type = $this->image_supported[$this->file_src_mime];
+            if ($this->file_src_mime && is_string($this->file_src_mime) && !empty($this->file_src_mime)) {
+                if (array_key_exists($this->file_src_mime, $this->image_supported)) {
+                    $this->file_is_image = true;
+                    $this->image_src_type = $this->image_supported[$this->file_src_mime];
+                    $this->log .= '- file is an image, and its type is supported by GD<br />';
+                } else if (strpos($this->file_src_mime, 'image/') !== FALSE && sizeof($this->image_supported) == 0) {
+                    $this->log .= '- file may be an image, but its type is not supported; is GD installed ?<br />';
+                }
             }
 
             // if the file is an image, we gather some useful data
