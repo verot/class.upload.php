@@ -4543,10 +4543,9 @@ class Upload {
                                 $this->log .=  'error<br />';
                                 $this->image_text_font = 5;
                             }
-                        }
 
                         // if the font is a string with a TTF font path, we check if we can access the font file
-                        if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.ttf') {
+                        } else if (!is_numeric($this->image_text_font) && strlen($this->image_text_font) > 4 && substr(strtolower($this->image_text_font), -4) == '.ttf') {
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;try to load font ' . $this->image_text_font . '... ';
                             if (strpos($this->image_text_font, '/') === false) $this->image_text_font = "./" . $this->image_text_font;
                             if (file_exists($this->image_text_font) && is_readable($this->image_text_font)) {
