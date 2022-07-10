@@ -82,5 +82,3 @@
     $translation['no_conversion_type']          = 'Tipe percakapan belum didefenisikan.'; // 'No conversion type defined.';
     $translation['copy_failed']                 = 'Tidak berhasil menyalin berkas di server. copy() tidak berhasil.'; // 'Error copying file on the server. copy() failed.';
     $translation['reading_failed']              = 'Tidak berhasil membaca berkas.'; // 'Error reading the file.';
-
-?>

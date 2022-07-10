@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = 'Le type de conversion n\'est pas défini.';
     $translation['copy_failed']                 = 'La copie du fichier sur le serveur a échoué.';
     $translation['reading_failed']              = 'Erreur pendant la lecture du fichier.';
-
-?>

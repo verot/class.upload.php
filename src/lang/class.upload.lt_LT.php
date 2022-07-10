@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = 'Nenusakytas konvertavimo tipas.';
     $translation['copy_failed']                 = 'Klaida kopijuojant failą serveryje. copy() klaida.';
     $translation['reading_failed']              = 'Klaida skaitant failą.';
-
-?>

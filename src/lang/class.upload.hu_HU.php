@@ -82,5 +82,3 @@
     $translation['no_conversion_type']          = 'Konverzió típusa nem lett megadva.';
     $translation['copy_failed']                 = 'Hiba történt a fájl szerverre való másolásakor. copy() sikertelen.';
     $translation['reading_failed']              = 'Hiba a fájl olvasásakor.';
-
-?>

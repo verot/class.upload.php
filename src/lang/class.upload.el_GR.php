@@ -80,6 +80,4 @@
     $translation['file_create']                 = 'Δεν υπάρχει υποστήριξη για την δημιουργία  %s .';
     $translation['no_conversion_type']          = 'Δεν ορίστηκε τύπος μετατροπής.';
     $translation['copy_failed']                 = 'Λάθος κατά την αντιγραφή του αρχείου στον εξυπηρετητή. Η συνάρτηση copy() απέτυχε.';
-    $translation['reading_failed']              = 'Λάθος κατά την ανάγνωση του αρχείου.';   
-        
-?>
+    $translation['reading_failed']              = 'Λάθος κατά την ανάγνωση του αρχείου.';

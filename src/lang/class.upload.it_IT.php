@@ -80,6 +80,4 @@
     $translation['file_create']                 = '%s: nessuna creazione da questo supporto.';
     $translation['no_conversion_type']          = 'Non e stata definito il tipo di conversione.';
     $translation['copy_failed']                 = 'Errore durante la copia del file sul server. copy() fallito.';
-    $translation['reading_failed']              = 'Errore nella lettura del file.';   
-        
-?>
+    $translation['reading_failed']              = 'Errore nella lettura del file.';

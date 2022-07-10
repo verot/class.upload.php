@@ -83,5 +83,3 @@
     $translation['no_conversion_type']          = 'Ingen konverteringstype defineret.';
     $translation['copy_failed']                 = 'Fejl ved kopiering af filen på serveren. Copy() fejlede.';
     $translation['reading_failed']              = 'Fejl ved læsning af filen.';
-
-?>

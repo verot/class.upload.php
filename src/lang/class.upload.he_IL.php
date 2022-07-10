@@ -82,5 +82,3 @@
     $translation['no_conversion_type']          = 'לא הוגדר סוג קובץ להמרה';
     $translation['copy_failed']                 = 'שגיאה בהעתקת הקובץ לשרת';
     $translation['reading_failed']              = 'שגיאה בקריאת הקובץ';
-        
-?>

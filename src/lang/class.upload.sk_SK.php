@@ -79,6 +79,4 @@
     $translation['file_create']                 = 'Nie je zapnutá podpora pre vytváranie %s.';
     $translation['no_conversion_type']          = 'Nedefinovaný typ konverzie.';
     $translation['copy_failed']                 = 'Chyba kopírovania súboru na serveri. Funkcia copy() zlyhala.';
-    $translation['reading_failed']              = 'Chyba čítania súboru.';   
-        
-?>
+    $translation['reading_failed']              = 'Chyba čítania súboru.';

@@ -79,6 +79,4 @@
     $translation['file_create']                 = 'Nu am suport pentru crearea %s.';
     $translation['no_conversion_type']          = 'Nu este definit niciun tip de conversie.';
     $translation['copy_failed']                 = 'Eroare la copierea fisierului pe server. copy() nereusit.';
-    $translation['reading_failed']              = 'Eroare la citirea fisierului.';   
-        
-?>
+    $translation['reading_failed']              = 'Eroare la citirea fisierului.';

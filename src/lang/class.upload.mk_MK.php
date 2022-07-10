@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = 'Не е дефиниран видот на конверзија.';
     $translation['copy_failed']                 = 'Грешка при копирањето на датотеката на сервер.';
     $translation['reading_failed']              = 'Грешка при читањето на датотеката.';
-
-?>

@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = 'هیچ نوع تبدیل پیدا نشد.';
     $translation['copy_failed']                 = 'خطای کپی فایل روی سرور.فرایند کپی با شکست مواجه شد.';
     $translation['reading_failed']              = 'خطای خواندن فایل.';
-
-?>

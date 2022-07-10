@@ -83,5 +83,3 @@
     $translation['no_conversion_type']          = 'Muunnostyyppiä ei määritelty.';
     $translation['copy_failed']                 = 'Virhe kopioidessa tiedosto palvelimelle. copy() epäonnistui.';
     $translation['reading_failed']              = 'Virhe tiedostoa lukiessa.';
-
-?>
