@@ -80,5 +80,3 @@
     $translation['no_conversion_type']          = 'Nije definirana vrsta konverzije.';
     $translation['copy_failed']                 = 'Greška pri presnimavanju datoteke na server.';
     $translation['reading_failed']              = 'Greška pri čitanju datoteke.';   
-        
-?>

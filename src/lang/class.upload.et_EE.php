@@ -81,5 +81,3 @@
     $translation['no_conversion_type']          = 'Konvertimise tüüp puudub.';
     $translation['copy_failed']                 = 'Viga faili kopeerimisel serverisse. copy() katkestati.';
     $translation['reading_failed']              = 'Viga faili lugemisel.';
-    
-?>

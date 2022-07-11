@@ -36,6 +36,7 @@
  * @license   http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright Volkan Metin
  * @edit Taner İnanır
+ * @edit Halil Şafak KILIÇ
  * @package   cmf
  * @subpackage external
  */
@@ -53,14 +54,14 @@
     $translation['file_too_big']                = 'Dosya izin verilenden daha büyük.';
     $translation['no_mime']                     = 'Dosya türü bulunamadı.';
     $translation['incorrect_file']              = 'Bu dosyanın uzantısı geçersiz.';
-    $translation['image_too_wide']              = 'Resim izin verilenden daha geniş.';
-    $translation['image_too_narrow']            = 'Resim izin verilenden daha dar.';
-    $translation['image_too_high']              = 'Resim izin verilenden daha uzun.';
-    $translation['image_too_short']             = 'Resim izin verilenden daha kısa.';
-    $translation['ratio_too_high']              = 'Resim oranı çok yüksek (resim çok geniş).';
-    $translation['ratio_too_low']               = 'Resim oranı çok düşük (resim çok uzun).';
-    $translation['too_many_pixels']             = 'Resim izin verilenden büyük.';
-    $translation['not_enough_pixels']           = 'Resim izin verilenden küçük.';
+    $translation['image_too_wide']              = 'Görsel izin verilenden daha geniş.';
+    $translation['image_too_narrow']            = 'Görsel izin verilenden daha dar.';
+    $translation['image_too_high']              = 'Görsel izin verilenden daha uzun.';
+    $translation['image_too_short']             = 'Görsel izin verilenden daha kısa.';
+    $translation['ratio_too_high']              = 'Görsel oranı çok yüksek (görsel çok geniş).';
+    $translation['ratio_too_low']               = 'Görsel oranı çok düşük (görsel çok uzun).';
+    $translation['too_many_pixels']             = 'Görsel izin verilenden büyük.';
+    $translation['not_enough_pixels']           = 'Görsel izin verilenden küçük.';
     $translation['file_not_uploaded']           = 'Dosya yüklenemedi. İşlem sonlandırıldı.';
     $translation['already_exists']              = '%s dosyası zaten var. Lütfen dosyanızın ismini değiştirerek tekrar deneyiniz.';
     $translation['temp_file_missing']           = 'Temp dizini doğru belirtilmemiş. İşlem sonlandırıldı.';
@@ -74,7 +75,7 @@
     $translation['source_not_readable']         = 'Dosyanın içeriği okunamadı. İşlem sonlandırıldı.';
     $translation['no_create_support']           = '%s dosyası oluşturulamadı.';
     $translation['create_error']                = 'Kaynaktan %s resmi oluşturulurken hata oluştu.';
-    $translation['source_invalid']              = 'Resim dosyası okunamadı. Dosyanın bir resim olduğundan emin misiniz?';
+    $translation['source_invalid']              = 'Görsel dosyası okunamadı. Dosyanın bir görsel olduğundan emin misiniz?';
     $translation['gd_missing']                  = 'Sunucuda GD kütüphanesi olmadığı için işleme devam edemiyorsunuz.';
     $translation['watermark_no_create_support'] = '%s resmi oluşturulamadığı için filigran oluşturulamadı.';
     $translation['watermark_create_error']      = '%s resmi okunamadığı için filigran oluşturulamadı.';
@@ -83,6 +84,3 @@
     $translation['no_conversion_type']          = 'Belirtilen dosya türü dönüştürülemedi.';
     $translation['copy_failed']                 = 'Dosya kopyalanırken hata oluştu. copy() işlemi başarısız.';
     $translation['reading_failed']              = 'Dosya okunurken hata oluştu.';   
-        
-?>
-
