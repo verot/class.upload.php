@@ -84,5 +84,3 @@
     $translation['watermark_create_error']      = 'Erro no momento da criação da marca d\'água %s a partir do arquivo fonte.';
     $translation['watermark_invalid']           = 'Impossível ler a marca d\'água, formato de arquivo desconhecido.';
     $translation['watermark_no_create_support'] = 'Criação a partir do arquivo %s impossível, marca d\'água não pode ser lida.';
-
-?>

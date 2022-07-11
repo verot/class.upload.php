@@ -81,5 +81,3 @@
     $translation['no_conversion_type']          = 'Тип конверсии не указан.';
     $translation['copy_failed']                 = 'Ошибка копирования файла на сервер. Команда copy() выполнена с ошибкой.';
     $translation['reading_failed']              = 'Ошибка чтения файла.';   
-        
-?>

@@ -80,5 +80,3 @@
     $translation['no_conversion_type']          = 'Nebyl nadefinován konverzní typ.';
     $translation['copy_failed']                 = 'Nastala chyba při kopírování souboru na serveru. Funkce copy() selhala.';
     $translation['reading_failed']              = 'Chyba při čtení souboru.';   
-        
-?>

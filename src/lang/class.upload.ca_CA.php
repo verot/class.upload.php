@@ -81,5 +81,3 @@
     $translation['no_conversion_type']          = 'El tipus de conversió no està definit.';
     $translation['copy_failed']                 = 'Error en copiar el fitxer al servidor. La comanda \'copy()\' ha fallat.';
     $translation['reading_failed']              = 'Error en la lectura del fitxer.';
-
-?>

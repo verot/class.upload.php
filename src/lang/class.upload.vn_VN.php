@@ -81,5 +81,3 @@
     $translation['no_conversion_type']          = 'Không chuyển đổi kiểu đã định nghĩa.';
     $translation['copy_failed']                 = 'Lỗi khi copy file trên server. copy() lỗi.';
     $translation['reading_failed']              = 'Lỗi khi đọc file.';   
-        
-?>

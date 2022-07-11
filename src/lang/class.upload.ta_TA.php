@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = 'மாற்று வகை வரையறுக்கப்பட்டவில்லை.';
     $translation['copy_failed']                 = 'சர்வரில் நகலெடுப்பதில் கோப்பு பிழை. copy() தோல்வியடைந்தது.';
     $translation['reading_failed']              = 'கோப்பை வாசிப்பதில் பிழை.';
-
-?>
