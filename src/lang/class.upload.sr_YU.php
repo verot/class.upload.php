@@ -41,8 +41,8 @@
     $translation['file_error']                  = 'Greška u datoteci. Pokušajte ponovno.';
     $translation['local_file_missing']          = 'Lokalna datoteka ne postoji.';
     $translation['local_file_not_readable']     = 'Lokalna datoteka nije čitljiva.';
-    $translation['uploaded_too_big_ini']        = 'Greška pri snimanju (datoteka je prevelika).';//the uploaded file exceeds the upload_max_filesize directive in php.ini
-    $translation['uploaded_too_big_html']       = 'Greška pri snimanju (datoteka je prevelika).';//the uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form
+    $translation['uploaded_too_big_ini']        = 'Greška pri snimanju (datoteka je prevelika).';
+    $translation['uploaded_too_big_html']       = 'Greška pri snimanju (datoteka je prevelika).';
     $translation['uploaded_partial']            = 'Greška pri snimanju (datoteka je samo djelomično snimljena).';
     $translation['uploaded_missing']            = 'Greška pri snimanju (fajl nije aploudovan).';
     $translation['uploaded_unknown']            = 'Greška pri snimanju (nepoznata greška).';
@@ -80,5 +80,3 @@
     $translation['no_conversion_type']          = 'Nije definisana vrsta konverzije.';
     $translation['copy_failed']                 = 'Greška pri presnimavanju datoteke na server.';
     $translation['reading_failed']              = 'Greška pri čitanju datoteke.';   
-        
-?>

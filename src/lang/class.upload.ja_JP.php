@@ -84,5 +84,3 @@
     $translation['no_conversion_type']          = '変換形式が定義されていません。';
     $translation['copy_failed']                 = 'ファイルコピーエラー。 copy() に失敗しました。';
     $translation['reading_failed']              = 'ファイル読み込みエラー。';
-        
-?>

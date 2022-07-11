@@ -81,5 +81,3 @@
     $translation['no_conversion_type']          = 'Не вказано тип конвертування.';
     $translation['copy_failed']                 = 'Помилка копіювання файлу на сервер. Відмова copy().';
     $translation['reading_failed']              = 'Помилка читання файлу.';   
-        
-?>
