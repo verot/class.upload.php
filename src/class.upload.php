@@ -4078,7 +4078,8 @@ class Upload {
                                         $p_new['green'] = (abs($p_orig['green'] - $p_blur['green']) >= $this->image_unsharp_threshold) ? max(0, min(255, ($this->image_unsharp_amount * ($p_orig['green'] - $p_blur['green'])) + $p_orig['green'])) : $p_orig['green'];
                                         $p_new['blue'] = (abs($p_orig['blue'] - $p_blur['blue']) >= $this->image_unsharp_threshold) ? max(0, min(255, ($this->image_unsharp_amount * ($p_orig['blue'] - $p_blur['blue'])) + $p_orig['blue'])) : $p_orig['blue'];
                                         if (($p_orig['red'] != $p_new['red']) || ($p_orig['green'] != $p_new['green']) || ($p_orig['blue'] != $p_new['blue'])) {
-                                            $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $p_orig['alpha']);
+                                            $alpha = round(max(-127, min(127, $p_orig['alpha'])));
+                                            $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $alpha);
                                             imagesetpixel($image_dst, $x, $y, $color);
                                         }
                                     }
@@ -4094,7 +4095,8 @@ class Upload {
                                         if ($p_new['green']>255) { $p_new['green']=255; }  elseif ($p_new['green']<0) { $p_new['green']=0; }
                                         $p_new['blue'] = ($this->image_unsharp_amount * ($p_orig['blue'] - $p_blur['blue'])) + $p_orig['blue'];
                                         if ($p_new['blue']>255) { $p_new['blue']=255; } elseif ($p_new['blue']<0) { $p_new['blue']=0; }
-                                        $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $p_orig['alpha']);
+                                        $alpha = round(max(-127, min(127, $p_orig['alpha'])));
+                                        $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $alpha);
                                         imagesetpixel($image_dst, $x, $y, $color);
                                     }
                                 }
@@ -4125,7 +4127,8 @@ class Upload {
                                 if ($this->image_greyscale) {
                                     $pixel = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
                                     $r = $g = $b = round((0.2125 * $pixel['red']) + (0.7154 * $pixel['green']) + (0.0721 * $pixel['blue']));
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4133,7 +4136,8 @@ class Upload {
                                     $pixel = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
                                     $c = (round($pixel['red'] + $pixel['green'] + $pixel['blue']) / 3) - 127;
                                     $r = $g = $b = ($c > $this->image_threshold ? 255 : 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4142,7 +4146,8 @@ class Upload {
                                     $r = max(min(round($pixel['red'] + (($this->image_brightness * 2))), 255), 0);
                                     $g = max(min(round($pixel['green'] + (($this->image_brightness * 2))), 255), 0);
                                     $b = max(min(round($pixel['blue'] + (($this->image_brightness * 2))), 255), 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4151,7 +4156,8 @@ class Upload {
                                     $r = max(min(round(($this->image_contrast + 128) * $pixel['red'] / 128), 255), 0);
                                     $g = max(min(round(($this->image_contrast + 128) * $pixel['green'] / 128), 255), 0);
                                     $b = max(min(round(($this->image_contrast + 128) * $pixel['blue'] / 128), 255), 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4160,7 +4166,8 @@ class Upload {
                                     $r = min(round($tint_red * $pixel['red'] / 169), 255);
                                     $g = min(round($tint_green * $pixel['green'] / 169), 255);
                                     $b = min(round($tint_blue * $pixel['blue'] / 169), 255);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4169,7 +4176,8 @@ class Upload {
                                     $r = round(255 - $pixel['red']);
                                     $g = round(255 - $pixel['green']);
                                     $b = round(255 - $pixel['blue']);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
