@@ -2926,6 +2926,7 @@ class Upload {
      * @return resource Container image
      */
     function imagecreatenew($x, $y, $fill = true, $trsp = false) {
+        $x = (int) $x; $y = (int) $y;
         if ($x < 1) $x = 1; if ($y < 1) $y = 1;
         if ($this->gdversion() >= 2 && !$this->image_is_palette) {
             // create a true color image
@@ -3913,6 +3914,8 @@ class Upload {
 
                         // resize the image
                         if ($this->image_dst_x != $this->image_src_x || $this->image_dst_y != $this->image_src_y) {
+                            $this->image_dst_x = (int) $this->image_dst_x;
+                            $this->image_dst_y = (int) $this->image_dst_y;
                             $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
 
                             if ($gd_version >= 2) {
