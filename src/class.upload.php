@@ -4077,8 +4077,9 @@ class Upload {
                                         $p_new['red'] = (abs($p_orig['red'] - $p_blur['red']) >= $this->image_unsharp_threshold) ? max(0, min(255, ($this->image_unsharp_amount * ($p_orig['red'] - $p_blur['red'])) + $p_orig['red'])) : $p_orig['red'];
                                         $p_new['green'] = (abs($p_orig['green'] - $p_blur['green']) >= $this->image_unsharp_threshold) ? max(0, min(255, ($this->image_unsharp_amount * ($p_orig['green'] - $p_blur['green'])) + $p_orig['green'])) : $p_orig['green'];
                                         $p_new['blue'] = (abs($p_orig['blue'] - $p_blur['blue']) >= $this->image_unsharp_threshold) ? max(0, min(255, ($this->image_unsharp_amount * ($p_orig['blue'] - $p_blur['blue'])) + $p_orig['blue'])) : $p_orig['blue'];
+                                        $p_new['alpha'] = max(-127, min(127, $p_orig['alpha']));
                                         if (($p_orig['red'] != $p_new['red']) || ($p_orig['green'] != $p_new['green']) || ($p_orig['blue'] != $p_new['blue'])) {
-                                            $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $p_orig['alpha']);
+                                            $color = imagecolorallocatealpha($image_dst, (int) $p_new['red'], (int) $p_new['green'], (int) $p_new['blue'], (int) $p_new['alpha']);
                                             imagesetpixel($image_dst, $x, $y, $color);
                                         }
                                     }
@@ -4094,7 +4095,8 @@ class Upload {
                                         if ($p_new['green']>255) { $p_new['green']=255; }  elseif ($p_new['green']<0) { $p_new['green']=0; }
                                         $p_new['blue'] = ($this->image_unsharp_amount * ($p_orig['blue'] - $p_blur['blue'])) + $p_orig['blue'];
                                         if ($p_new['blue']>255) { $p_new['blue']=255; } elseif ($p_new['blue']<0) { $p_new['blue']=0; }
-                                        $color = imagecolorallocatealpha($image_dst, $p_new['red'], $p_new['green'], $p_new['blue'], $p_orig['alpha']);
+                                        $p_new['alpha'] = round(max(-127, min(127, $p_orig['alpha'])));
+                                        $color = imagecolorallocatealpha($image_dst, (int) $p_new['red'], (int) $p_new['green'], (int) $p_new['blue'], (int) $p_new['alpha']);
                                         imagesetpixel($image_dst, $x, $y, $color);
                                     }
                                 }
@@ -4125,7 +4127,8 @@ class Upload {
                                 if ($this->image_greyscale) {
                                     $pixel = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
                                     $r = $g = $b = round((0.2125 * $pixel['red']) + (0.7154 * $pixel['green']) + (0.0721 * $pixel['blue']));
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4133,7 +4136,8 @@ class Upload {
                                     $pixel = imagecolorsforindex($image_dst, imagecolorat($image_dst, $x, $y));
                                     $c = (round($pixel['red'] + $pixel['green'] + $pixel['blue']) / 3) - 127;
                                     $r = $g = $b = ($c > $this->image_threshold ? 255 : 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4142,7 +4146,8 @@ class Upload {
                                     $r = max(min(round($pixel['red'] + (($this->image_brightness * 2))), 255), 0);
                                     $g = max(min(round($pixel['green'] + (($this->image_brightness * 2))), 255), 0);
                                     $b = max(min(round($pixel['blue'] + (($this->image_brightness * 2))), 255), 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4151,7 +4156,8 @@ class Upload {
                                     $r = max(min(round(($this->image_contrast + 128) * $pixel['red'] / 128), 255), 0);
                                     $g = max(min(round(($this->image_contrast + 128) * $pixel['green'] / 128), 255), 0);
                                     $b = max(min(round(($this->image_contrast + 128) * $pixel['blue'] / 128), 255), 0);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4160,7 +4166,8 @@ class Upload {
                                     $r = min(round($tint_red * $pixel['red'] / 169), 255);
                                     $g = min(round($tint_green * $pixel['green'] / 169), 255);
                                     $b = min(round($tint_blue * $pixel['blue'] / 169), 255);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4169,7 +4176,8 @@ class Upload {
                                     $r = round(255 - $pixel['red']);
                                     $g = round(255 - $pixel['green']);
                                     $b = round(255 - $pixel['blue']);
-                                    $color = imagecolorallocatealpha($image_dst, $r, $g, $b, $pixel['alpha']);
+                                    $alpha = round(max(-127, min(127, $pixel['alpha'])));
+                                    $color = imagecolorallocatealpha($image_dst, (int) $r, (int) $g, (int) $b, (int) $alpha);
                                     imagesetpixel($image_dst, $x, $y, $color);
                                     unset($color); unset($pixel);
                                 }
@@ -4330,7 +4338,7 @@ class Upload {
                     // add watermark image
                     if ($this->image_watermark!='' && file_exists($this->image_watermark)) {
                         $this->log .= '- add watermark<br />';
-                        $this->image_watermark_position = strtolower($this->image_watermark_position);
+                        $this->image_watermark_position = strtolower((string) $this->image_watermark_position);
                         $watermark_info = getimagesize($this->image_watermark);
                         $watermark_type = (array_key_exists(2, $watermark_info) ? $watermark_info[2] : null); // 1 = GIF, 2 = JPG, 3 = PNG
                         $watermark_checked = false;
@@ -4404,8 +4412,8 @@ class Upload {
                             // if watermark is too large/tall, resize it first
                             if ((!$this->image_watermark_no_zoom_out && ($watermark_dst_width > $this->image_dst_x || $watermark_dst_height > $this->image_dst_y))
                              || (!$this->image_watermark_no_zoom_in && $watermark_dst_width < $this->image_dst_x && $watermark_dst_height < $this->image_dst_y)) {
-                                $canvas_width  = $this->image_dst_x - abs($this->image_watermark_x);
-                                $canvas_height = $this->image_dst_y - abs($this->image_watermark_y);
+                                $canvas_width  = $this->image_dst_x - abs((int) $this->image_watermark_x);
+                                $canvas_height = $this->image_dst_y - abs((int) $this->image_watermark_y);
                                 if (($watermark_src_width/$canvas_width) > ($watermark_src_height/$canvas_height)) {
                                     $watermark_dst_width = $canvas_width;
                                     $watermark_dst_height = intval($watermark_src_height*($canvas_width / $watermark_src_width));
@@ -4527,9 +4535,9 @@ class Upload {
                         if (!is_numeric($this->image_text_line_spacing)) $this->image_text_line_spacing = 0;
                         if (!is_numeric($this->image_text_padding_x)) $this->image_text_padding_x = $this->image_text_padding;
                         if (!is_numeric($this->image_text_padding_y)) $this->image_text_padding_y = $this->image_text_padding;
-                        $this->image_text_position = strtolower($this->image_text_position);
-                        $this->image_text_direction = strtolower($this->image_text_direction);
-                        $this->image_text_alignment = strtolower($this->image_text_alignment);
+                        $this->image_text_position = strtolower((string) $this->image_text_position);
+                        $this->image_text_direction = strtolower((string) $this->image_text_direction);
+                        $this->image_text_alignment = strtolower((string) $this->image_text_alignment);
 
                         $font_type = 'gd';
 
@@ -4670,15 +4678,15 @@ class Upload {
                                     if ($this->image_text_direction == 'v') {
                                         imagestringup($filter,
                                                       $this->image_text_font,
-                                                      $k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
-                                                      $text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))) ,
+                                                      (int) ($k * ($line_width  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0))),
+                                                      (int) ($text_height - (2 * $this->image_text_padding_y) - ($this->image_text_alignment == 'l' ? 0 : (($t_height - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2)))),
                                                       $v,
                                                       $text_color);
                                     } else {
                                         imagestring($filter,
                                                     $this->image_text_font,
-                                                    ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
-                                                    $k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0)),
+                                                    (int) ($this->image_text_alignment == 'l' ? 0 : (($t_width - strlen($v) * $char_width) / ($this->image_text_alignment == 'r' ? 1 : 2))),
+                                                    (int) ($k * ($line_height  + ($k > 0 && $k < (sizeof($text)) ? $this->image_text_line_spacing : 0))),
                                                     $v,
                                                     $text_color);
                                     }
