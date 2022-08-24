@@ -1,6 +1,7 @@
 <?php
 
 error_reporting(E_ALL);
+@ini_set("display_errors", 1);
 
 // we first include the upload class, as we will need it here to deal with the uploaded file
 include('../src/class.upload.php');
@@ -360,7 +361,7 @@ if ($action == 'simple') {
 
 
     //error_reporting(E_ALL ^ (E_NOTICE | E_USER_NOTICE | E_WARNING | E_USER_WARNING));
-    ini_set("max_execution_time",0);
+    @ini_set("max_execution_time",0);
 
     // we don't upload, we just send a local filename (image)
     $handle = new upload((isset($_POST['my_field']) ? $_POST['my_field'] : (isset($_GET['file']) ? $_GET['file'] : '')));
