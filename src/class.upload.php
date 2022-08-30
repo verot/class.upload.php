@@ -2108,7 +2108,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '24/08/2022';
+        $this->version            = '30/08/2022';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
@@ -4593,8 +4593,8 @@ class upload {
                                 $maxX = max(array($rect[0],$rect[2],$rect[4],$rect[6]));
                                 $minY = min(array($rect[1],$rect[3],$rect[5],$rect[7]));
                                 $maxY = max(array($rect[1],$rect[3],$rect[5],$rect[7]));
-                                $text_offset_x = abs($minX) - 1;
-                                $text_offset_y = abs($minY) - 1;
+                                $text_offset_x = abs($minX);
+                                $text_offset_y = abs($minY);
                                 $text_width = $maxX - $minX + (2 * $this->image_text_padding_x);
                                 $text_height = $maxY - $minY + (2 * $this->image_text_padding_y);
                             }
