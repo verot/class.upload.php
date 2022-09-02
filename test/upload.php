@@ -173,18 +173,9 @@ if ($action == 'simple') {
 
         // yes, the file is on the server
         // below are some example settings which can be used if the uploaded file is an image.
-        /*$handle->image_resize            = true;
+        $handle->image_resize            = true;
         $handle->image_ratio_y           = true;
         $handle->image_x                 = 300;
-*/
-
-$handle->image_text = 'TEST 2022-08-30';
-$handle->image_text_x = 79;
-$handle->image_text_y = 72;
-$handle->image_text_color = '#132D66';
-$handle->image_text_size = 26;
-$handle->image_text_padding = 0;
-$handle->image_text_font = 'Inter-Regular.ttf';
 
         // now, we start the upload 'process'. That is, to copy the uploaded file
         // from its temporary location to the wanted location
