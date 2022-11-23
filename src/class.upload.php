@@ -500,6 +500,14 @@ class upload {
     var $file_max_size;
 
     /**
+     * Max file size, from php.ini
+     *
+     * @access private
+     * @var double
+     */
+    var $file_max_size_raw;
+
+    /**
      * Set this variable to true to resize the file if it is an image
      *
      * You will probably want to set {@link image_x} and {@link image_y}, and maybe one of the ratio variables
