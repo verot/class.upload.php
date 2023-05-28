@@ -2,3 +2,5 @@ test/tmp/
 dev/
 *.sublime-project
 *.sublime-workspace
+.idea/
+vendor/
