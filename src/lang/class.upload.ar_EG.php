@@ -84,4 +84,3 @@
     $translation['no_conversion_type']          = 'نوع التحويل غير معروف.';
     $translation['copy_failed']                 = 'خطأ في نسخ الملف على الخادم. copy() فشلت.';
     $translation['reading_failed']              = 'خطأ في قراءة الملف.';
-

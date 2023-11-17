@@ -5239,5 +5239,3 @@ class Upload {
         return true;
     }
 }
-
-?>
