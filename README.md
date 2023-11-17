@@ -89,10 +89,10 @@ Don't forget to add `enctype="multipart/form-data"` in your form tag `<form>` if
 
 ### Namespacing
 
-The class is now namespaced in the `Verot/Upload` namespace. If you have the error *Fatal error:  Class 'Upload' not found*, then make sure your file belongs to the namespace, or instantiate the class with its fully qualified name:
+The class is now namespaced in the `Verot/Upload` namespace. If you have the error *Fatal error:  Class 'Upload' not found*, then `use` the class fully qualified name, or instantiate the class with its fully qualified name:
 
 ```php
-namespace Verot\Upload;
+use Verot\Upload\Upload;
 $handle = new Upload($_FILES['image_field']);
 ```
 or
