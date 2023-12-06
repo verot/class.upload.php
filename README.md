@@ -156,6 +156,23 @@ echo $handle->process();
 die();
 ```
 
+### Warning about security 
+
+By default, the class relies on MIME type detection to assess whether the file can be uploaded or not. Several MIME type detection methods are used, depending on the server configuration. The class relies on a blacklist of dangerous file extensions to prevent uploads (or to rename dangerous scripts as text files), as well as a whitelist of accepted MIME types.
+
+But it is not the purpose of this class to do in-depth checking and heuristics to attempt to detect maliciously crafted files. For instance, an attacker can craft a file that will have the correct MIME type, but will carry a malicious payload, such as a valid GIF file which would contain some code leading to a XSS vulnerability. If this GIF file has a .html extension, it may be uploaded (depending on the class's settings) and display an XSS vulnerability. 
+
+However, you can mitigate this by restricting the kind of files that can be uploaded, using `allowed` and `forbidden`, to whitelist and blacklist files depending on their MIME type or extension. *The most secure option would be to only whitelist extensions that you want to allow through, and then making sure that your server always serves the file with the content-type based on the file extension.* 
+
+For instance, if you only want to allow one type of file, you could whitelist only its file extension. In the following example, only .html files are let through, and are not converted to a text file:
+```php
+$handle->allowed   = array('html');
+$handle->forbidden = array();
+$handle->no_script = false;
+```
+
+In the end, it is your responsibility to make sure the correct files are uploaded. But more importantly, it is your responsibility to serve the uploaded files correctly, for instance by forcing the server to always provide the content-type based on the file extension.
+
 
 ### Troubleshooting
 
