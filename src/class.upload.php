@@ -1892,6 +1892,8 @@ class Upload {
             'bat',
             'phar',
             'wsdl',
+            'html',
+            'htm',
         );
         
         $this->forbidden = array_merge($this->dangerous, array(
@@ -2118,7 +2120,7 @@ class Upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '17/11/2023';
+        $this->version            = '07/12/2023';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
