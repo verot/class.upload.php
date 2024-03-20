@@ -82,4 +82,4 @@
     $translation['file_create']                 = '%s dosyası oluşturulamadı.';
     $translation['no_conversion_type']          = 'Belirtilen dosya türü dönüştürülemedi.';
     $translation['copy_failed']                 = 'Dosya kopyalanırken hata oluştu. copy() işlemi başarısız.';
-    $translation['reading_failed']              = 'Dosya okunurken hata oluştu.';   
+    $translation['reading_failed']              = 'Dosya okunurken hata oluştu.';
