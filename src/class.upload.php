@@ -408,7 +408,7 @@ class Upload {
      * The list of blacklisted extensions is in {@link dangerous}
      *
      * Note that this check happens before checking for forbidden MIME types or extensions
-     * If you want to forbid uploads rather than turning scripts into text files, 
+     * If you want to forbid uploads rather than turning scripts into text files,
      * set {@link no_script} to false and use {@link forbidden} instead
      *
      * @access public
@@ -1895,12 +1895,12 @@ class Upload {
             'html',
             'htm',
         );
-        
+
         $this->forbidden = array_merge($this->dangerous, array(
             'exe',
             'dll',
         ));
-        
+
         $this->allowed = array(
             'application/arj',
             'application/excel',
@@ -2120,7 +2120,7 @@ class Upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '07/12/2023';
+        $this->version            = '10/09/2024';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
@@ -3153,7 +3153,7 @@ class Upload {
                 }
                 // if the file is text based, or has a dangerous extension, we rename it as .txt
                 if ((((substr($this->file_src_mime, 0, 5) == 'text/' && $this->file_src_mime != 'text/rtf') || strpos($this->file_src_mime, 'javascript') !== false)  && (substr($file_src_name, -4) != '.txt'))
-                    || preg_match('/\.(' . implode('|', $this->dangerous) . ')$/i', $this->file_src_name)
+                    || preg_match('/\.(' . implode('|', $this->dangerous) . ')/i', $this->file_src_name)
                     || $this->file_force_extension && empty($file_src_name_ext)) {
                     $this->file_src_mime = 'text/plain';
                     if ($this->file_src_name_ext) $file_src_name_body = $file_src_name_body . '.' . $this->file_src_name_ext;
@@ -3175,7 +3175,7 @@ class Upload {
                     if (strpos($v, '/') == false) {
                         if ($v == '*' || strtolower($v) == strtolower($file_src_name_ext)) {
                             $allowed = true;
-                            break;                        
+                            break;
                         }
                     } else {
                         list($v1, $v2) = explode('/', $v);
@@ -3193,7 +3193,7 @@ class Upload {
                         if ($v == '*' || strtolower($v) == strtolower($file_src_name_ext)) {
                             $allowed = false;
                             $this->log .= '- extension ' . $v . ' is forbidden !<br />';
-                            break;                        
+                            break;
                         }
                     } else {
                         list($v1, $v2) = explode('/', $v);
