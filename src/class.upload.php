@@ -2811,35 +2811,47 @@ class Upload {
      * @return string Sanitized file name
      */
     function sanitize($filename) {
-        // remove HTML tags
+        // Remove HTML tags
         $filename = strip_tags($filename);
-        // remove non-breaking spaces
+    
+        // Remove non-breaking spaces
         $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
-        // remove illegal file system characters
+    
+        // Remove illegal file system characters
         $filename = str_replace(array_map('chr', range(0, 31)), '', $filename);
-        // remove dangerous characters for file names
+    
+        // Remove dangerous characters
         $chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "’", "%20",
                        "+", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", "^", chr(0));
         $filename = str_replace($chars, '-', $filename);
-        // remove break/tabs/return carriage
+    
+        // Remove break/tabs/return carriage and replace multiple spaces with a single dash
         $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
-        // convert some special letters
-        $convert = array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
-                         'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u');
-        $filename = strtr($filename, $convert);
-        // remove foreign accents by converting to HTML entities, and then remove the code
-        $filename = html_entity_decode( $filename, ENT_QUOTES, "utf-8" );
-        $filename = htmlentities($filename, ENT_QUOTES, "utf-8");
-        $filename = preg_replace("/(&)([a-z])([a-z]+;)/i", '$2', $filename);
-        // clean up, and remove repetitions
-        $filename = preg_replace('/_+/', '_', $filename);
-        $filename = preg_replace(array('/ +/', '/-+/'), '-', $filename);
-        $filename = preg_replace(array('/-*\.-*/', '/\.{2,}/'), '.', $filename);
-        // cut to 255 characters
-        $length = 255 - strlen($this->file_dst_name_ext) + 1;
-        $filename = extension_loaded('mbstring') ? mb_strcut($filename, 0, $length, mb_detect_encoding($filename)) : substr($filename, 0, $length);
-        // remove bad characters at start and end
+    
+        // Convert special letters to ASCII
+        if (function_exists('transliterator_transliterate')) {
+            $filename = transliterator_transliterate('Any-Latin; Latin-ASCII', $filename);
+        } else {
+            $filename = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $filename);
+        }
+    
+        // Remove remaining non-ASCII characters
+        $filename = preg_replace('/[^A-Za-z0-9_.-]/', '', $filename);
+    
+        // Remove repeated dots and ensure a single valid file extension remains
+        $filename = preg_replace('/-*\.-*/', '.', $filename);
+        $filename = preg_replace('/\.{2,}/', '.', $filename);
+    
+        // Limit filename length to 255 characters while preserving the extension
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $basename = pathinfo($filename, PATHINFO_FILENAME);
+        $maxLength = 255 - (mb_strlen($ext) ? mb_strlen($ext) + 1 : 0);
+        $basename = mb_substr($basename, 0, $maxLength, 'UTF-8');
+        $filename = $ext ? $basename . '.' . $ext : $basename;
+    
+        // Remove bad characters at start and end
         $filename = trim($filename, '.-_');
+    
         return $filename;
     }
 
