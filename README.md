@@ -1,3 +1,24 @@
+# Fork info
+
+This is a fork of beautiful class.upload.php by Colin Verot vnich inclusions nev filename sanitization metnod.
+
+## Fixes & Optimizations
+
+✅ UTF-8 Transliteration
+- Converts šđčć.png → sdc.png (removes accents & special characters)
+- Uses transliterator_transliterate() (if available) or iconv() fallback.
+
+✅ Handles Filename Length Properly
+- Uses mb_substr() to safely trim multibyte characters.
+
+✅ Removes Double Extensions
+- Prevents filenames like file..png.
+
+✅ Ensures a Safe Filename
+- Removes dangerous characters.
+- Keeps only ASCII, dots, dashes, and underscores.
+
+
 # class.upload.php
 
 Homepage : [http://www.verot.net/php_class_upload.htm](http://www.verot.net/php_class_upload.htm)
