@@ -1893,6 +1893,7 @@ class upload {
             'wsdl',
             'html',
             'htm',
+            'svg',
         );
 
         $this->forbidden = array_merge($this->dangerous, array(
@@ -2119,7 +2120,7 @@ class upload {
      */
     function upload($file, $lang = 'en_GB') {
 
-        $this->version            = '10/09/2024';
+        $this->version            = '06/11/2026';
 
         $this->file_src_name      = '';
         $this->file_src_name_body = '';
